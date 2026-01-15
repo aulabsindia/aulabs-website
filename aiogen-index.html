@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIOGen - Intelligent Control Plane</title>
+    <style>
+        :root {
+            --bg-color: #030816;
+            --accent-cyan: #00f2ff;
+            --accent-green: #00ffaa;
+            --accent-blue: #0077ff;
+            --accent-purple: #bd00ff;
+            --accent-pink: #ff00c8;
+            --glass-bg: rgba(10, 20, 40, 0.8);
+            --border-color: rgba(0, 242, 255, 0.4);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Vibrant background with radial highlights */
+        .background-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 119, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(189, 0, 255, 0.1) 0%, transparent 40%),
+                linear-gradient(rgba(0, 119, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 119, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+            padding: 0 8%;
+        }
+
+        /* Central Engine - High Vibrancy */
+        .aiogen-core {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .core-box {
+            width: 240px;
+            height: 500px;
+            background: linear-gradient(180deg, rgba(0, 119, 255, 0.1) 0%, rgba(0, 242, 255, 0.05) 50%, rgba(189, 0, 255, 0.1) 100%);
+            border: 3px solid var(--accent-cyan);
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: #fff;
+            text-shadow: 0 0 20px var(--accent-cyan);
+            box-shadow: 
+                0 0 40px rgba(0, 242, 255, 0.3),
+                inset 0 0 30px rgba(0, 242, 255, 0.2);
+            position: relative;
+        }
+
+        .core-label {
+            margin-top: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            width: 500px;
+            line-height: 1.6;
+            background: rgba(3, 8, 22, 0.9);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            position: relative;
+            width: 350px;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Box Styling - More vibrant borders */
+        .glass-box {
+            background: var(--glass-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 14px;
+            padding: 18px 28px;
+            text-align: center;
+            min-width: 220px;
+            backdrop-filter: blur(15px);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 10px rgba(0, 119, 255, 0.2);
+            z-index: 10;
+        }
+
+        /* Right side specific organization */
+        .policy-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+        }
+
+        .sub-group-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 2px dashed var(--accent-cyan);
+            border-radius: 30px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .sub-group-label {
+            position: absolute;
+            top: -12px;
+            background: var(--bg-color);
+            padding: 0 15px;
+            font-size: 11px;
+            color: var(--accent-cyan);
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .sub-circles-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .circle-node {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.2), transparent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0, 242, 255, 0.1);
+            z-index: 6;
+            color: #fff;
+        }
+
+        /* Resource Planets */
+        .planet {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: #0a1228;
+            border: 2px solid var(--accent-pink);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 0 25px rgba(255, 0, 200, 0.3);
+            z-index: 30;
+        }
+
+        .planet.blue { border-color: var(--accent-blue); box-shadow: 0 0 25px rgba(0, 119, 255, 0.3); }
+        .planet.green { border-color: var(--accent-green); box-shadow: 0 0 25px rgba(0, 255, 170, 0.3); }
+
+        .planet i { font-size: 24px; margin-bottom: 4px; font-style: normal; }
+
+        /* Flowing Lines SVG */
+        .flow-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .marching-ants {
+            stroke-dasharray: 8, 12;
+            animation: move-ants 0.8s linear infinite;
+        }
+
+        @keyframes move-ants { to { stroke-dashoffset: -20; } }
+
+        .orbit-path {
+            position: absolute;
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="container">
+        <svg class="flow-svg" id="svg-layer" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice"></svg>
+
+        <!-- LEFT COLUMN: INPUTS -->
+        <div class="column" id="left-col">
+            <div class="orbit-path" id="path-left" style="width: 550px; height: 550px;"></div>
+            <div class="glass-box" style="border-color: var(--accent-purple);">Models (GPT, DeepSeek, Gemini)</div>
+            <div class="glass-box" style="border-color: var(--accent-green);">Prompt</div>
+            <div class="glass-box" style="border-color: var(--accent-pink);">API Keys</div>
+            <div class="glass-box" style="border-color: var(--accent-blue);">Pro.Language: Go</div>
+        </div>
+
+        <!-- CENTER ENGINE -->
+        <div class="aiogen-core">
+            <div class="core-box">AIOGen</div>
+            <div class="core-label">Intelligent control plane layer for governance and orchestration</div>
+        </div>
+
+        <!-- RIGHT COLUMN: POLICIES -->
+        <div class="column" id="right-col">
+            <div class="orbit-path" id="path-right" style="width: 550px; height: 550px;"></div>
+            
+            <div class="policy-stack">
+                <div class="glass-box" id="validation-box" style="border-color: var(--accent-green); color: var(--accent-green);">Validation Policy</div>
+                <div class="glass-box" id="mutation-box" style="border-color: var(--accent-purple); color: var(--accent-purple);">Mutation Policy</div>
+                
+                <div class="sub-group-container" id="by-container">
+                    <div class="sub-group-label">ENFORCEMENT MODES</div>
+                    <div class="sub-circles-wrapper">
+                        <div class="circle-node">By<br>Native</div>
+                        <div class="circle-node">By<br>Config</div>
+                        <div class="circle-node" style="border-color: var(--accent-pink); color: var(--accent-pink);">Custom<br>Policy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="planet-container"></div>
+
+    <script>
+        const planetsData = [
+            { id: 'pod', label: 'POD', icon: '📦', colId: 'left-col', radius: 275, speed: 0.006, offset: 0, color: 'blue' },
+            { id: 'service', label: 'SVC', icon: '⚙️', colId: 'left-col', radius: 275, speed: 0.006, offset: Math.PI / 2, color: 'blue' },
+            { id: 'ingress', label: 'INGR', icon: '🌐', colId: 'left-col', radius: 275, speed: 0.006, offset: Math.PI, color: 'blue' },
+            { id: 'crd', label: 'CRD', icon: '📜', colId: 'left-col', radius: 275, speed: 0.006, offset: -Math.PI / 2, color: 'blue' },
+            { id: 'logs', label: 'LOGS', icon: '📄', colId: 'right-col', radius: 275, speed: -0.006, offset: 0, color: 'green' },
+            { id: 'audit', label: 'AUDIT', icon: '🛡️', colId: 'right-col', radius: 275, speed: -0.006, offset: Math.PI, color: 'green' }
+        ];
+
+        const container = document.getElementById('planet-container');
+        planetsData.forEach(p => {
+            const el = document.createElement('div');
+            el.id = p.id;
+            el.className = `planet ${p.color}`;
+            el.innerHTML = `<i>${p.icon}</i><span>${p.label}</span>`;
+            container.appendChild(el);
+            p.angle = p.offset;
+        });
+
+        function updateConnectors() {
+            const svg = document.getElementById('svg-layer');
+            const core = document.querySelector('.core-box').getBoundingClientRect();
+            svg.innerHTML = ''; 
+
+            // Left side connections
+            const leftBoxes = document.querySelectorAll('#left-col .glass-box');
+            leftBoxes.forEach((box, i) => {
+                const b = box.getBoundingClientRect();
+                const colors = ['#bd00ff', '#00ffaa', '#ff00c8', '#0077ff'];
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const d = `M ${b.right} ${b.top + b.height/2} C ${core.left - 80} ${b.top + b.height/2}, ${core.left - 80} ${core.top + core.height/2}, ${core.left} ${core.top + core.height/2}`;
+                path.setAttribute("d", d);
+                path.setAttribute("stroke", colors[i]);
+                path.setAttribute("stroke-width", "2");
+                path.setAttribute("fill", "none");
+                path.setAttribute("class", "marching-ants");
+                path.setAttribute("opacity", "0.6");
+                svg.appendChild(path);
+            });
+
+            // Right side connections
+            const valBox = document.getElementById('validation-box').getBoundingClientRect();
+            const mutBox = document.getElementById('mutation-box').getBoundingClientRect();
+            const byContainer = document.getElementById('by-container').getBoundingClientRect();
+
+            [
+                { rect: valBox, color: '#00ffaa' }, 
+                { rect: mutBox, color: '#bd00ff' }
+            ].forEach(item => {
+                const b = item.rect;
+                // Core to Policy
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const d = `M ${core.right} ${core.top + core.height/2} C ${core.right + 80} ${core.top + core.height/2}, ${core.right + 80} ${b.top + b.height/2}, ${b.left} ${b.top + b.height/2}`;
+                path.setAttribute("d", d);
+                path.setAttribute("stroke", item.color);
+                path.setAttribute("stroke-width", "2");
+                path.setAttribute("fill", "none");
+                path.setAttribute("class", "marching-ants");
+                svg.appendChild(path);
+
+                // Policy to "By" Container
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const startX = b.left + b.width / 2;
+                const startY = b.bottom;
+                const endX = byContainer.left + byContainer.width / 2;
+                const endY = byContainer.top;
+                
+                const pathD = `M ${startX} ${startY} L ${endX} ${endY}`;
+                line.setAttribute("d", pathD);
+                line.setAttribute("stroke", "rgba(0, 242, 255, 0.5)");
+                line.setAttribute("stroke-width", "2");
+                line.setAttribute("stroke-dasharray", "4 4");
+                line.setAttribute("fill", "none");
+                svg.appendChild(line);
+            });
+        }
+
+        function animate() {
+            planetsData.forEach(p => {
+                const col = document.getElementById(p.colId);
+                const colRect = col.getBoundingClientRect();
+                const el = document.getElementById(p.id);
+                p.angle += p.speed;
+                const centerX = colRect.left + colRect.width / 2;
+                const centerY = colRect.top + colRect.height / 2;
+                const x = centerX + Math.cos(p.angle) * p.radius;
+                const y = centerY + Math.sin(p.angle) * p.radius;
+                el.style.left = `${x - 35}px`;
+                el.style.top = `${y - 35}px`;
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('load', () => {
+            updateConnectors();
+            animate();
+        });
+        window.addEventListener('resize', updateConnectors);
+    </script>
+</body>
+</html>

@@ -12,6 +12,7 @@
       --muted:#b8c9ea;
       --blue:#6fb6ff;
       --blue2:#3f8cff;
+      --accent:#49d67d;
       --border:rgba(255,255,255,.12);
       --shadow: 0 12px 34px rgba(0,0,0,.38);
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -108,7 +109,6 @@
     h2{margin:42px 0 10px;font-size:22px}
     h3{margin:0 0 8px;font-size:16px}
     p{margin:0 0 10px;color:var(--muted);line-height:1.72}
-    ul{margin:10px 0 0;padding-left:18px;color:var(--muted);line-height:1.78}
 
     .grid2{display:grid;grid-template-columns: repeat(2, 1fr);gap:14px;margin:18px 0 0}
     .grid3{display:grid;grid-template-columns: repeat(3, 1fr);gap:14px;margin:26px 0 0}
@@ -126,7 +126,7 @@
     td{color:var(--muted);font-size:14px;line-height:1.65}
     tr:last-child td{border-bottom:none}
 
-    /* Details cards */
+    /* Collapsible cards */
     details.card{overflow:hidden}
     details.card > summary{
       list-style:none;
@@ -143,8 +143,7 @@
     details.card > summary::-webkit-details-marker{display:none}
     details.card > summary::marker{content:"";}
 
-    /* Custom chevron */
-    details.card > summary .chev{
+    .chev{
       width:30px;height:30px;
       border-radius:10px;
       border:1px solid rgba(255,255,255,.14);
@@ -152,7 +151,7 @@
       display:grid;place-items:center;
       flex:0 0 auto;
     }
-    details.card > summary .chev svg{
+    .chev svg{
       width:16px;height:16px;
       fill:none;
       stroke: rgba(234,242,255,.92);
@@ -193,6 +192,10 @@
       box-shadow: 0 0 0 3px rgba(111,182,255,.14);
       flex:0 0 auto;
     }
+    .tax-item .dot.green{
+      background: linear-gradient(135deg, rgba(73,214,125,.95), rgba(73,214,125,.65));
+      box-shadow: 0 0 0 3px rgba(73,214,125,.14);
+    }
     .tax-item .v{
       margin:6px 0 0;
       color:var(--muted);
@@ -200,14 +203,40 @@
       font-size:14px;
     }
 
-    .code{
-      padding:16px 16px 14px;
-      font-family:var(--mono);
-      font-size:12.5px;line-height:1.55;
-      color:#dbe9ff;
+    /* Code blocks */
+    pre.code{
+      margin:0;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
       overflow:auto;
-      border-top:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.10);
+    }
+    pre.code code{
+      display:block;
+      font-family:var(--mono);
+      font-size:12.5px;
+      line-height:1.6;
+      color:#dbe9ff;
+      tab-size:2;
+      white-space:pre;
+    }
+    .codecap{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin:0 0 10px;
+      color:rgba(234,242,255,.92);
+      font-weight:950;
+    }
+    .codecap span{
+      color:rgba(255,255,255,.70);
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.14);
+      padding:4px 8px;
+      border-radius:999px;
+      background: rgba(0,0,0,.14);
+      white-space:nowrap;
     }
 
     .faq details{border:1px solid var(--border);background:rgba(0,0,0,.10);border-radius:14px;padding:12px 14px}
@@ -321,8 +350,8 @@
           </summary>
           <div class="content">
             <p>
-              Some policies depend on live information outside the cluster. Examples include identity systems, ticketing tools, CMDB records,
-              asset inventory, and vulnerability feeds.
+              Some policies depend on live information outside the cluster.
+              Examples include identity systems, ticketing tools, CMDB records, asset inventory, and vulnerability feeds.
               Go makes these integrations straightforward using APIs and SDKs with authentication, retries, timeouts, and caching.
             </p>
           </div>
@@ -337,7 +366,8 @@
           </summary>
           <div class="content">
             <p>
-              Enterprise policy includes layered conditions and exceptions. Production can be strict while development stays flexible.
+              Enterprise policy includes layered conditions and exceptions.
+              Production can be strict while development stays flexible.
               Go keeps this readable using functions, shared libraries, and typed helpers.
             </p>
           </div>
@@ -352,8 +382,8 @@
           </summary>
           <div class="content">
             <p>
-              Many controls require context beyond a single resource. You may need to correlate resources, validate against cluster state,
-              enforce rollout ordering, or check dependency readiness.
+              Many controls require context beyond a single resource.
+              You may need to correlate resources, validate against cluster state, enforce rollout ordering, or check dependency readiness.
               Go controllers and admission webhooks can use informers, caches, and CRDs for structured state-aware checks.
             </p>
           </div>
@@ -557,10 +587,23 @@
 
         <div class="card pane">
           <h3>Or ship a Go library instead</h3>
-          <ul>
-            <li>Expose a small API. Evaluate(input) returns decision and reasons.</li>
-            <li>Compose policies with packages and shared helpers.</li>
-            <li>Run the same code in CI, webhooks, controllers, or CLIs.</li>
+          <ul class="tax-list">
+            <li class="tax-item">
+              <div class="k"><span class="dot green"></span>Expose a symbol</div>
+              <div class="v">Return decision and enforce policy.</div>
+            </li>
+            <li class="tax-item">
+              <div class="k"><span class="dot green"></span>Write complex logic</div>
+              <div class="v">Write complex and nested conditions.</div>
+            </li>
+            <li class="tax-item">
+              <div class="k"><span class="dot green"></span>Merge conditions</div>
+              <div class="v">Allows merger of multiple conditions into same policy.</div>
+            </li>
+            <li class="tax-item">
+              <div class="k"><span class="dot green"></span>Configurable policies</div>
+              <div class="v">Allows policy that can be configured.</div>
+            </li>
           </ul>
         </div>
       </div>
@@ -586,36 +629,49 @@
 
     <section id="examples">
       <h2>Minimal examples</h2>
+
       <div class="grid2">
-        <div class="card">
-          <div class="code">
-<span style="color:#9fb6e8">// Example: require an owner label</span>
+        <div class="card pane">
+          <div class="codecap">
+            <div>Example policy helper</div>
+            <span>policy.go</span>
+          </div>
+          <pre class="code"><code>package policy
+
 func RequireOwnerLabel(labels map[string]string) (bool, string) {
   if labels["owner"] == "" {
     return false, "missing label: owner"
   }
   return true, "ok"
-}
-          </div>
+}</code></pre>
         </div>
-        <div class="card">
-          <div class="code">
-<span style="color:#9fb6e8">// Example: table-driven test</span>
+
+        <div class="card pane">
+          <div class="codecap">
+            <div>Example table-driven test</div>
+            <span>policy_test.go</span>
+          </div>
+          <pre class="code"><code>package policy
+
+import "testing"
+
 func TestRequireOwnerLabel(t *testing.T) {
-  tests := []struct{
-    name string
+  tests := []struct {
+    name   string
     labels map[string]string
-    ok bool
+    ok     bool
   }{
     {"missing", map[string]string{}, false},
-    {"present", map[string]string{"owner":"plat"}, true},
+    {"present", map[string]string{"owner": "plat"}, true},
   }
+
   for _, tt := range tests {
     ok, _ := RequireOwnerLabel(tt.labels)
-    if ok != tt.ok { t.Fatalf("%s", tt.name) }
+    if ok != tt.ok {
+      t.Fatalf("%s", tt.name)
+    }
   }
-}
-          </div>
+}</code></pre>
         </div>
       </div>
     </section>
@@ -625,11 +681,11 @@ func TestRequireOwnerLabel(t *testing.T) {
       <div class="grid2">
         <details>
           <summary>When is a DSL the right choice?</summary>
-          <p>For policies driven mainly by pattern matching, DSLs are a good fit for constraint-based enforcement.</p>
+          <p>For simple policies driven mainly by pattern matching, DSLs are a good fit for constraint-based enforcement.</p>
         </details>
         <details>
           <summary>Can Go still offer YAML or GUI authoring?</summary>
-          <p>Yes. Treat YAML as input. Translate into typed structures. Evaluate in Go for safety and explainability.</p>
+          <p>Yes, AIOGen supports convertion of YAMLs in Golang based policies</p>
         </details>
         <details>
           <summary>How should policies be packaged?</summary>

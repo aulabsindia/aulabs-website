@@ -19,6 +19,7 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
 
+
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -29,6 +30,7 @@
         radial-gradient(900px 480px at 88% -10%, rgba(63,140,255,.22), transparent 55%),
         linear-gradient(180deg, #050d1c, var(--navy));
     }
+
 
     a{color:inherit}
     .wrap{max-width:1120px;margin:0 auto;padding:26px 18px 84px}
@@ -41,6 +43,7 @@
       border-bottom:1px solid rgba(255,255,255,.08);
     }
 
+
     .brand{display:flex;gap:12px;align-items:center}
     .logo{
       width:36px;height:36px;border-radius:12px;
@@ -52,6 +55,7 @@
     nav a{opacity:.88;text-decoration:none;font-size:14px}
     nav a:hover{opacity:1;text-decoration:underline}
 
+
     .cta{
       display:inline-flex;align-items:center;gap:10px;
       background: rgba(111,182,255,.13);
@@ -59,6 +63,7 @@
       padding:9px 12px;border-radius:12px;
       text-decoration:none;font-weight:900;font-size:14px;
     }
+
 
     .hero{
       display:grid;grid-template-columns: 1.12fr .88fr;gap:18px;
@@ -81,8 +86,10 @@
       margin-right:8px;margin-top:8px;
     }
 
+
     h1{margin:14px 0 10px;font-size:44px;line-height:1.06}
     .sub{color:var(--muted);font-size:16px;line-height:1.65;max-width:76ch}
+
 
     .buttons{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 0}
     .btn{
@@ -91,12 +98,14 @@
       border:1px solid var(--border);text-decoration:none;
       background: rgba(255,255,255,.04);
       font-weight:900;font-size:14px;
+      cursor:pointer;
     }
     .btn.primary{
       background: linear-gradient(135deg, var(--blue), var(--blue2));
       border-color: rgba(111,182,255,.95);
       color:#051128;
     }
+
 
     .card{
       border:1px solid var(--border);
@@ -105,13 +114,16 @@
       box-shadow: var(--shadow);
     }
 
+
     .pane{padding:16px}
     h2{margin:42px 0 10px;font-size:22px}
     h3{margin:0 0 8px;font-size:16px}
     p{margin:0 0 10px;color:var(--muted);line-height:1.72}
 
+
     .grid2{display:grid;grid-template-columns: repeat(2, 1fr);gap:14px;margin:18px 0 0}
     .grid3{display:grid;grid-template-columns: repeat(3, 1fr);gap:14px;margin:26px 0 0}
+
 
     table{
       width:100%;
@@ -125,6 +137,7 @@
     th{font-size:13px;text-transform:uppercase;letter-spacing:.7px;color:#d7e6ff;background:rgba(0,0,0,.22)}
     td{color:var(--muted);font-size:14px;line-height:1.65}
     tr:last-child td{border-bottom:none}
+
 
     /* Collapsible cards */
     details.card{overflow:hidden}
@@ -142,6 +155,7 @@
     }
     details.card > summary::-webkit-details-marker{display:none}
     details.card > summary::marker{content:"";}
+
 
     .chev{
       width:30px;height:30px;
@@ -163,6 +177,7 @@
     details.card[open] > summary .chev svg{ transform: rotate(180deg); }
     details.card[open] > summary{background: rgba(0,0,0,.10)}
     details.card .content{padding:14px 16px 16px}
+
 
     /* DSL tax tiles */
     .tax-list{
@@ -203,6 +218,7 @@
       font-size:14px;
     }
 
+
     /* Code blocks */
     pre.code{
       margin:0;
@@ -239,14 +255,28 @@
       white-space:nowrap;
     }
 
+
     .faq details{border:1px solid var(--border);background:rgba(0,0,0,.10);border-radius:14px;padding:12px 14px}
     .faq summary{cursor:pointer;font-weight:900}
+
 
     footer{
       margin-top:46px;padding-top:18px;
       border-top:1px solid rgba(255,255,255,.10);
       color:rgba(255,255,255,.78);font-size:13px
     }
+
+
+    /* CTA input styling */
+    .input{
+      flex:1;min-width:240px;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.18);
+      color:var(--light);
+    }
+
 
     @media (max-width: 980px){
       header{position:relative}
@@ -255,6 +285,34 @@
       .grid2,.grid3{grid-template-columns:1fr}
     }
   </style>
+
+  <!-- Prefill script -->
+  <script>
+    const FORM_BASE =
+      "https://docs.google.com/forms/d/e/1FAIpQLSekLYGIl18Ssp5hXqOoSdbvyzPP5ebcuV4Nyna-q1M2ox4sJw/viewform";
+
+    // Your real Email Address entry id:
+    const EMAIL_ENTRY = "entry.1215947414";
+
+    function openWaitlistWithPrefill(e) {
+      if (e) e.preventDefault();
+
+      const input = document.getElementById("waitlistEmail");
+      const email = (input && input.value ? input.value.trim() : "");
+
+      // If no email entered, open plain form.
+      if (!email) {
+        window.open(FORM_BASE, "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      const url = FORM_BASE + "?usp=pp_url&" + EMAIL_ENTRY + "=" + encodeURIComponent(email);
+
+      // Open in new tab; fallback to same tab if popup blocked.
+      const w = window.open(url, "_blank", "noopener,noreferrer");
+      if (!w) window.location.href = url;
+    }
+  </script>
 </head>
 <body>
   <div class="wrap">
@@ -274,8 +332,10 @@
         <a href="#examples">Samples</a>
         <a href="#faq">FAQ</a>
       </nav>
+      <!-- 1) "Try" maps to the CTA section -->
       <a class="cta" href="#cta">Try →</a>
     </header>
+
 
     <section class="hero" id="thesis">
       <div>
@@ -287,7 +347,9 @@
           <span>Go-native</span>
         </div>
 
+
         <h1>Why Go is best suited for production policies (vs a custom DSL)</h1>
+
 
         <p class="sub">
           Production policy enforcement is not just field checks in YAML.
@@ -296,11 +358,14 @@
           Go fits this reality because policies can be engineered, tested, shipped, and operated like any other critical service.
         </p>
 
+
         <div class="buttons">
           <a class="btn primary" href="#comparison">See the comparison</a>
           <a class="btn" href="#benefits">Benefits</a>
+          <!-- 1) "Try" maps to the CTA section -->
           <a class="btn" href="#cta">Try</a>
         </div>
+
 
         <div style="margin-top:16px">
           <span class="tag">Kubernetes webhooks and controllers</span>
@@ -309,6 +374,7 @@
           <span class="tag">High-throughput enforcement</span>
         </div>
       </div>
+
 
       <div class="card">
         <div class="pane">
@@ -321,26 +387,23 @@
       </div>
     </section>
 
+
     <section id="benefits">
       <h2>Benefits of Go policies in the real world</h2>
       <p>Each card expands with a down arrow.</p>
 
+
       <div class="grid2">
         <details class="card">
-          <summary>
-            <span>Shipping is easy</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Shipping is easy</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>Run the same policy logic as a CLI, in CI, or as an admission webhook or controller. You avoid shipping policies plus a separate interpreter.</p>
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Policies that require external data</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Policies that require external data</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Some policies depend on live information outside the cluster.
@@ -350,11 +413,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Complex conditional business logic</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Complex conditional business logic</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Enterprise policy includes layered conditions and exceptions.
@@ -364,11 +425,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Cross-resource and state-aware decisions</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Cross-resource and state-aware decisions</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Many controls require context beyond a single resource.
@@ -378,11 +437,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Low-latency, high-throughput enforcement</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Low-latency, high-throughput enforcement</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               At scale, policy evaluation is on the critical path for deployments and autoscaling.
@@ -391,11 +448,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Deep artifact inspection</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Deep artifact inspection</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Security policies often require SBOM validation, signature verification, image inspection, and configuration parsing.
@@ -404,11 +459,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Easier debugging and long-term maintenance</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Easier debugging and long-term maintenance</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Go-based policy systems follow standard engineering practices.
@@ -418,11 +471,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Flexible integration with scanning tools</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Flexible integration with scanning tools</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Organizations use different scanners and approval processes that change over time.
@@ -431,11 +482,9 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Fits the platform engineer toolchain</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Fits the platform engineer toolchain</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>
               Go aligns with the Kubernetes ecosystem.
@@ -445,21 +494,17 @@
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Tooling is default</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Tooling is default</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>Formatting, testing, and static analysis are standard in Go projects. This reduces style debates and increases confidence during reviews.</p>
           </div>
         </details>
 
+
         <details class="card">
-          <summary>
-            <span>Policies evolve</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
-          </summary>
+          <summary><span>Policies evolve</span><span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
           <div class="content">
             <p>Go policies change like software. You can refactor, add tests, review diffs, and release versions without reinventing a policy toolchain.</p>
           </div>
@@ -467,12 +512,14 @@
       </div>
     </section>
 
+
     <section id="comparison">
       <h2>Go vs DSL: what matters in production</h2>
       <p>
         DSLs can be concise, but they add a language surface area and a runtime to operate.
         If policy authors are engineers and enforcement is part of automation, Go reduces lifecycle complexity.
       </p>
+
 
       <table>
         <thead>
@@ -493,97 +540,58 @@
       </table>
     </section>
 
+
     <section id="dsl-tax">
       <h2>The hidden DSL tax</h2>
       <div class="grid2">
         <div class="card pane">
           <h3>Rule based language</h3>
           <ul class="tax-list">
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>New rules to learn</div>
-              <div class="v">Policy authors and reviewers must learn and remember a separate syntax and mental model, which slows onboarding and reviews.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Custom tooling burden</div>
-              <div class="v">A DSL needs its own formatter, linter, editor integrations, docs, and examples, which Go largely provides through its ecosystem.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Debugging split-brain</div>
-              <div class="v">Failures require debugging both the policy code and the policy engine runtime, increasing time to resolution.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Versioning and migration overhead</div>
-              <div class="v">Language and rule schema changes force policy rewrites and compatibility planning across teams and repos.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Runtime and package complexity</div>
-              <div class="v">You ship and operate policies plus an engine or interpreter, then manage engine versions across CI and clusters.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Harder deep integrations</div>
-              <div class="v">Policies that need external APIs often fight the DSL evaluation model and require extra glue services.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot"></span>Complexity escape hatches</div>
-              <div class="v">As conditions and exceptions grow, policies become nested or push logic outside the DSL, eroding the original simplicity.</div>
-            </li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>New rules to learn</div><div class="v">Policy authors and reviewers must learn and remember a separate syntax and mental model, which slows onboarding and reviews.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Custom tooling burden</div><div class="v">A DSL needs its own formatter, linter, editor integrations, docs, and examples, which Go largely provides through its ecosystem.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Debugging split-brain</div><div class="v">Failures require debugging both the policy code and the policy engine runtime, increasing time to resolution.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Versioning and migration overhead</div><div class="v">Language and rule schema changes force policy rewrites and compatibility planning across teams and repos.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Runtime and package complexity</div><div class="v">You ship and operate policies plus an engine or interpreter, then manage engine versions across CI and clusters.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Harder deep integrations</div><div class="v">Policies that need external APIs often fight the DSL evaluation model and require extra glue services.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot"></span>Complexity escape hatches</div><div class="v">As conditions and exceptions grow, policies become nested or push logic outside the DSL, eroding the original simplicity.</div></li>
           </ul>
         </div>
+
 
         <div class="card pane">
           <h3>Or ship a Go library instead</h3>
           <ul class="tax-list">
-            <li class="tax-item">
-              <div class="k"><span class="dot green"></span>Expose a symbol</div>
-              <div class="v">Return decision and enforce policy.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot green"></span>Write complex logic</div>
-              <div class="v">Write complex and nested conditions.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot green"></span>Merge conditions</div>
-              <div class="v">Allows merger of multiple conditions into same policy.</div>
-            </li>
-            <li class="tax-item">
-              <div class="k"><span class="dot green"></span>Configurable policies</div>
-              <div class="v">Allows policy that can be configured.</div>
-            </li>
+            <li class="tax-item"><div class="k"><span class="dot green"></span>Expose a symbol</div><div class="v">Return decision and enforce policy.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot green"></span>Write complex logic</div><div class="v">Write complex and nested conditions.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot green"></span>Merge conditions</div><div class="v">Allows merger of multiple conditions into same policy.</div></li>
+            <li class="tax-item"><div class="k"><span class="dot green"></span>Configurable policies</div><div class="v">Allows policy that can be configured.</div></li>
           </ul>
         </div>
       </div>
     </section>
 
+
     <section id="patterns">
       <h2>Go policy patterns</h2>
       <div class="grid3">
-        <div class="card pane">
-          <h3>Typed input</h3>
-          <p>Model policy inputs as structs. Validate at boundaries.</p>
-        </div>
-        <div class="card pane">
-          <h3>Explainable output</h3>
-          <p>Return structured reasons. Make denials auditable.</p>
-        </div>
-        <div class="card pane">
-          <h3>Determinism</h3>
-          <p>Keep evaluation pure. Isolate I/O behind interfaces.</p>
-        </div>
+        <div class="card pane"><h3>Typed input</h3><p>Model policy inputs as structs. Validate at boundaries.</p></div>
+        <div class="card pane"><h3>Explainable output</h3><p>Return structured reasons. Make denials auditable.</p></div>
+        <div class="card pane"><h3>Determinism</h3><p>Keep evaluation pure. Isolate I/O behind interfaces.</p></div>
       </div>
     </section>
+
 
     <section id="examples">
       <h2>Sample business logic</h2>
       <p>Two examples of policy enforcement logic that is easy to express and operate in Go.</p>
 
+
       <div class="grid2">
         <div class="card pane">
-          <div class="codecap">
-            <div>Block Deployments with low replicas</div>
-            <span>deployments.go</span>
-          </div>
+          <div class="codecap"><div>Block Deployments with low replicas</div><span>deployments.go</span></div>
           <pre class="code"><code>// Policy: deny Deployments when replicas are set to 1 or lower.
 // Context: inside a validating admission webhook handler.
+
 
 // Check if replicas are set to less than 1
 if deployment.Spec.Replicas != nil && *deployment.Spec.Replicas &lt;= 1 {
@@ -597,13 +605,12 @@ if deployment.Spec.Replicas != nil && *deployment.Spec.Replicas &lt;= 1 {
 }</code></pre>
         </div>
 
+
         <div class="card pane">
-          <div class="codecap">
-            <div>Disallow HostPath volumes</div>
-            <span>pods.go</span>
-          </div>
+          <div class="codecap"><div>Disallow HostPath volumes</div><span>pods.go</span></div>
           <pre class="code"><code>// Policy: deny Pods that use HostPath volumes.
 // Context: inside a validating admission webhook handler.
+
 
 for _, volume := range pod.Spec.Volumes {
   if volume.HostPath != nil {
@@ -620,6 +627,7 @@ for _, volume := range pod.Spec.Volumes {
       </div>
     </section>
 
+
     <section id="faq" class="faq">
       <h2>FAQ</h2>
       <div class="grid2">
@@ -629,11 +637,11 @@ for _, volume := range pod.Spec.Volumes {
         </details>
         <details>
           <summary>Can Go still offer YAML or GUI authoring?</summary>
-          <p>Yes, AIOGen supports convertion of YAMLs in Golang based policies. AIOGen works as a translator too thereby breaking language barrier</p>
+          <p>Yes, AIOGen supports convertion of YAMLs in Golang based policies</p>
         </details>
         <details>
           <summary>How should policies be packaged?</summary>
-          <p>Start as a Go library. Ship as a single webhook or service when you need centralized enforcement.</p>
+          <p>Policy documentation coming up soon for steps</p>
         </details>
         <details>
           <summary>How do these collapse widgets work?</summary>
@@ -642,19 +650,27 @@ for _, volume := range pod.Spec.Volumes {
       </div>
     </section>
 
+
+    <!-- 1) This is the section Try links should jump to -->
     <section id="cta" class="card pane" style="margin-top:18px">
       <h2 style="margin-top:0">Want to try AIOGen with policy starter kit in Go ?</h2>
       <p style="margin-bottom:14px">
         Get a ready kit structure with examples, tests, and CI hooks so your policies behave like production code from day one.
       </p>
-      <form onsubmit="event.preventDefault(); alert('Thanks. You are added to the waitlist.');">
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <input aria-label="email" type="email" required placeholder="you@company.com"
-                 style="flex:1;min-width:240px;padding:11px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.18);color:var(--light)"/>
-          <button class="btn primary" type="submit">Add me to wailist.</button>
-        </div>
-      </form>
+
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input id="waitlistEmail" class="input" aria-label="email" type="email" placeholder="you@company.com" />
+        <!-- Button click sends user to Google Form WITH prefilled email -->
+        <a class="btn primary"
+           href="https://docs.google.com/forms/d/e/1FAIpQLSekLYGIl18Ssp5hXqOoSdbvyzPP5ebcuV4Nyna-q1M2ox4sJw/viewform"
+           onclick="openWaitlistWithPrefill(event)"
+           target="_blank" rel="noopener noreferrer">
+          Add me to wailist.
+        </a>
+      </div>
     </section>
+
 
     <footer>
       <div>© 2026 AIOGen , Go-Vantage</div>

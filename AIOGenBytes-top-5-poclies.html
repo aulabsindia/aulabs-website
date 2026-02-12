@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 5 Critical Kubernetes Validation Policies | AIOGen by Au.AI</title>
+    <meta name="description" content="Discover the essential Kubernetes validation policies that AIOGen automatically generates and enforces for enterprise cluster security and governance.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: #0f172a;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            color: white;
+            padding: 80px 20px 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .hero-logo {
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: -60px auto 0;
+            padding: 0 20px 60px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .intro-card {
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin-bottom: 50px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+        
+        .intro-card p {
+            font-size: 1.15em;
+            color: #cbd5e1;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        .intro-card strong {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .policy-grid {
+            display: grid;
+            gap: 40px;
+        }
+        
+        .policy-card {
+            background: #1e293b;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            border: 1px solid #334155;
+        }
+        
+        .policy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
+        }
+        
+        .policy-image {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .policy-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .policy-icon {
+            position: relative;
+            z-index: 1;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .policy-icon svg {
+            width: 60px;
+            height: 60px;
+            fill: white;
+        }
+        
+        .policy-content {
+            padding: 40px;
+        }
+        
+        .policy-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .policy-number {
+            background: #3b82f6;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+        }
+        
+        .policy-content h2 {
+            color: #f1f5f9;
+            font-size: 1.6em;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .policy-plugin-name {
+            background: #1e3a8a;
+            color: #93c5fd;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            display: inline-block;
+            border: 1px solid #2563eb;
+        }
+        
+        .policy-content p {
+            color: #cbd5e1;
+            font-size: 1.05em;
+            margin: 20px 0;
+            line-height: 1.7;
+        }
+        
+        .risk-level {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .risk-critical {
+            background: #7f1d1d;
+            color: #fca5a5;
+            border: 1px solid #991b1b;
+        }
+        
+        .benefits {
+            background: #1e3a8a;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+            margin-bottom: 15px;
+        }
+        
+        .benefits h4 {
+            color: #93c5fd;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .benefits ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .benefits li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+        
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .compliance-badges {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+        }
+        
+        .compliance-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #0f172a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 2px solid;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+        
+        .compliance-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .compliance-badge.hipaa {
+            border-color: #06b6d4;
+            color: #06b6d4;
+        }
+        
+        .compliance-badge.pci {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+        
+        .compliance-badge.sox {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+        
+        .compliance-badge.gdpr {
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .compliance-badge svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        .compliance-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 10;
+            line-height: 1.5;
+            font-weight: normal;
+        }
+        
+        .compliance-badge:hover .compliance-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+        
+        .compliance-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #334155;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .stat-card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid #334155;
+        }
+        
+        .stat-card .stat-number {
+            font-size: 3em;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .stat-label {
+            color: #cbd5e1;
+            font-size: 1.1em;
+        }
+        
+        .stat-card .stat-source {
+            color: #64748b;
+            font-size: 0.75em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        footer {
+            background: #0f172a;
+            color: #64748b;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 80px;
+            border-top: 1px solid #1e293b;
+        }
+        
+        footer .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        footer h3 {
+            color: #f1f5f9;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        footer p {
+            margin: 10px 0;
+        }
+        
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 968px) {
+            .policy-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .policy-image {
+                padding: 30px;
+                min-height: 200px;
+            }
+            
+            .hero h1 {
+                font-size: 2em;
+            }
+            
+            .compliance-tooltip {
+                width: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Top 5 Critical Kubernetes Validation Policies</h1>
+            <p class="subtitle">AI-Powered Security & Governance for Production Clusters</p>
+            <div class="hero-logo">⚡ POWERED BY AIOGen</div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="intro-card">
+            <p>
+                <strong>AIOGen</strong> leverages patented AI technology to automatically generate, 
+                validate, and enforce critical Kubernetes security policies. These production-ready validation policies 
+                are native to the AIOGen engine and simply need to be enabled to protect your clusters from the most 
+                dangerous attack vectors, ensuring compliance and preventing costly breaches.
+            </p>
+        </div>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">82%</div>
+                <div class="stat-label">of Organizations Breached Through Containers</div>
+                <div class="stat-source">Source: 2025 Container Security Report</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">80%</div>
+                <div class="stat-label">of Breaches Involve Privileged Credential Misuse</div>
+                <div class="stat-source">Source: IBM & Exabeam 2025</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Automated Policy Enforcement</div>
+                <div class="stat-source">AIOGen Native Engine</div>
+            </div>
+        </div>
+        
+        <div class="policy-grid">
+            <!-- Policy 1 -->
+            <div class="policy-card">
+                <div class="policy-image">
+                    <div class="policy-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="policy-content">
+                    <div class="policy-header">
+                        <span class="policy-number">1</span>
+                        <h2>Disallow Privileged Containers</h2>
+                    </div>
+                    <span class="risk-level risk-critical">🔴 CRITICAL RISK</span>
+                    <div class="policy-plugin-name">Validate_Pod_DisallowPrivilegedContainers_Policy</div>
+                    <p>
+                        Prevents containers from running with elevated privileges that enable host system access and container breakout. 
+                        Privileged containers can access all host devices, modify kernel parameters, and bypass security controls, 
+                        making them equivalent to root access on the host.
+                    </p>
+                    <div class="benefits">
+                        <h4>Protection Benefits</h4>
+                        <ul>
+                            <li>Blocks direct host system compromise</li>
+                            <li>Prevents kernel module loading and system call manipulation</li>
+                            <li>Eliminates device access exploitation vectors</li>
+                            <li>Enforces container isolation boundaries</li>
+                        </ul>
+                    </div>
+                    <div class="compliance-badges">
+                        <div class="compliance-badge hipaa">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                            HIPAA
+                            <div class="compliance-tooltip">Enforces ePHI protection by preventing privileged access that could expose patient data and violate HIPAA's access control requirements.</div>
+                        </div>
+                        <div class="compliance-badge pci">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            PCI DSS
+                            <div class="compliance-tooltip">Required for cardholder data isolation per PCI DSS Requirement 2.2.4 - configuring system security parameters to prevent misuse.</div>
+                        </div>
+                        <div class="compliance-badge sox">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            SOX
+                            <div class="compliance-tooltip">Supports SOX IT general controls by enforcing least-privilege access and preventing unauthorized system changes that could affect financial reporting.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Policy 2 -->
+            <div class="policy-card">
+                <div class="policy-image">
+                    <div class="policy-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="policy-content">
+                    <div class="policy-header">
+                        <span class="policy-number">2</span>
+                        <h2>Disallow Privilege Escalation</h2>
+                    </div>
+                    <span class="risk-level risk-critical">🔴 CRITICAL RISK</span>
+                    <div class="policy-plugin-name">Validate_Pod_DisallowPrivilegeEscalation_Policy</div>
+                    <p>
+                        Blocks privilege escalation attempts within containers by setting allowPrivilegeEscalation to false. 
+                        This ensures processes cannot gain more privileges than their parent, even if setuid binaries or 
+                        file capabilities are present in the container image.
+                    </p>
+                    <div class="benefits">
+                        <h4>Protection Benefits</h4>
+                        <ul>
+                            <li>Prevents setuid/setgid binary exploitation</li>
+                            <li>Blocks file capability abuse</li>
+                            <li>Stops privilege escalation chains</li>
+                            <li>Enforces least-privilege execution model</li>
+                        </ul>
+                    </div>
+                    <div class="compliance-badges">
+                        <div class="compliance-badge hipaa">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                            HIPAA
+                            <div class="compliance-tooltip">Essential for HIPAA's least-privilege requirement (§164.308(a)(3)) - limiting user access to minimum necessary for their job function.</div>
+                        </div>
+                        <div class="compliance-badge pci">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            PCI DSS
+                            <div class="compliance-tooltip">Mandated by PCI DSS Requirement 7 - restricting access to cardholder data by business need-to-know through role-based access control.</div>
+                        </div>
+                        <div class="compliance-badge sox">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            SOX
+                            <div class="compliance-tooltip">Fulfills SOX Section 404 IT general controls by preventing unauthorized privilege elevation that could compromise financial data integrity.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Policy 3 -->
+            <div class="policy-card">
+                <div class="policy-image">
+                    <div class="policy-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V6h5.17l2 2H20v10zm-8-4h2v2h-2zm0-6h2v4h-2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="policy-content">
+                    <div class="policy-header">
+                        <span class="policy-number">3</span>
+                        <h2>Disallow HostPath Volumes</h2>
+                    </div>
+                    <span class="risk-level risk-critical">🔴 CRITICAL RISK</span>
+                    <div class="policy-plugin-name">Validate_Pod_DisallowHostPath_Policy</div>
+                    <p>
+                        Restricts hostPath volume mounts that provide direct access to the host filesystem. Unrestricted hostPath 
+                        mounts enable attackers to read sensitive files (/etc/shadow, kubelet credentials), modify system configurations, 
+                        and escape container boundaries to compromise the entire node.
+                    </p>
+                    <div class="benefits">
+                        <h4>Protection Benefits</h4>
+                        <ul>
+                            <li>Prevents access to sensitive host files and directories</li>
+                            <li>Blocks container-to-host escape vectors</li>
+                            <li>Protects kubelet credentials and node certificates</li>
+                            <li>Eliminates unauthorized system configuration changes</li>
+                        </ul>
+                    </div>
+                    <div class="compliance-badges">
+                        <div class="compliance-badge hipaa">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                            HIPAA
+                            <div class="compliance-tooltip">Critical for HIPAA PHI security (§164.312(a)(1)) - implementing technical safeguards to prevent unauthorized access to electronic protected health information.</div>
+                        </div>
+                        <div class="compliance-badge pci">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            PCI DSS
+                            <div class="compliance-tooltip">Enforces PCI DSS Requirement 1.3 - prohibiting direct public access between internet and system components storing cardholder data through network isolation.</div>
+                        </div>
+                        <div class="compliance-badge gdpr">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            GDPR
+                            <div class="compliance-tooltip">Supports GDPR Article 32 - implementing appropriate technical measures to ensure security of processing and protecting personal data from unauthorized access.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Policy 4 -->
+            <div class="policy-card">
+                <div class="policy-image">
+                    <div class="policy-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="policy-content">
+                    <div class="policy-header">
+                        <span class="policy-number">4</span>
+                        <h2>Require Image Checksums</h2>
+                    </div>
+                    <span class="risk-level risk-critical">🔴 CRITICAL RISK</span>
+                    <div class="policy-plugin-name">Validate_Pod_RequireImagesUseChecksum_ALL_Policy</div>
+                    <p>
+                        Enforces image digest verification instead of mutable tags (like 'latest' or 'v1.0'). Using SHA256 digests 
+                        ensures immutable, cryptographically verified deployments that prevent tag-based attacks where malicious 
+                        images replace legitimate ones with the same tag.
+                    </p>
+                    <div class="benefits">
+                        <h4>Protection Benefits</h4>
+                        <ul>
+                            <li>Guarantees immutable image deployments</li>
+                            <li>Prevents supply chain substitution attacks</li>
+                            <li>Enables cryptographic verification of image integrity</li>
+                            <li>Supports compliance with software bill of materials (SBOM)</li>
+                        </ul>
+                    </div>
+                    <div class="compliance-badges">
+                        <div class="compliance-badge hipaa">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                            HIPAA
+                            <div class="compliance-tooltip">Mandatory for HIPAA image integrity verification (§164.312(c)(1)) - ensuring ePHI is not improperly altered or destroyed through cryptographic mechanisms.</div>
+                        </div>
+                        <div class="compliance-badge pci">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            PCI DSS
+                            <div class="compliance-tooltip">Required by PCI DSS Requirement 6.3 - developing secure software per industry best practices including integrity verification of all system components.</div>
+                        </div>
+                        <div class="compliance-badge sox">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            SOX
+                            <div class="compliance-tooltip">Fulfills SOX change management controls by ensuring all software changes are authorized, tested, and verified before deployment to production systems.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Policy 5 -->
+            <div class="policy-card">
+                <div class="policy-image">
+                    <div class="policy-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="policy-content">
+                    <div class="policy-header">
+                        <span class="policy-number">5</span>
+                        <h2>Require Priority Class</h2>
+                    </div>
+                    <span class="risk-level risk-critical">🔴 CRITICAL RISK</span>
+                    <div class="policy-plugin-name">Validate_Pod_RequirePriorityClassName_Policy</div>
+                    <p>
+                        Mandates priority class assignment for proper workload scheduling and resource allocation. Priority classes 
+                        protect mission-critical pods from preemption during resource contention, ensuring system stability and 
+                        preventing service disruption when clusters reach capacity.
+                    </p>
+                    <div class="benefits">
+                        <h4>Protection Benefits</h4>
+                        <ul>
+                            <li>Protects critical workloads during resource constraints</li>
+                            <li>Enables tiered service guarantees (SLAs)</li>
+                            <li>Prevents cascade failures from resource exhaustion</li>
+                            <li>Supports controlled capacity management and auto-scaling</li>
+                        </ul>
+                    </div>
+                    <div class="compliance-badges">
+                        <div class="compliance-badge hipaa">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                            HIPAA
+                            <div class="compliance-tooltip">Supports HIPAA availability requirements (§164.308(a)(7)(i)) - establishing contingency plans to ensure ePHI availability during emergencies.</div>
+                        </div>
+                        <div class="compliance-badge pci">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            PCI DSS
+                            <div class="compliance-tooltip">Aligns with PCI DSS Requirement 12.10 - implementing incident response plans including maintaining high availability of critical payment processing systems.</div>
+                        </div>
+                        <div class="compliance-badge sox">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            SOX
+                            <div class="compliance-tooltip">Supports SOX business continuity controls by ensuring financial reporting systems maintain availability and resilience during peak loads or failures.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <h3>Au.AI Software Labs</h3>
+            <p><strong>AIOGen</strong> - Patented AI-Powered Kubernetes Policy Generation Framework</p>
+            <p style="margin-top: 20px;">
+                <a href="https://auailabs.com">auailabs.com</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 0.9em;">&copy; 2026 Au.AI Software Labs. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

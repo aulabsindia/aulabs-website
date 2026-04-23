@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIOGen Benchmark Case Study </title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=zodiak@400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0e1317; --surface:#151c22; --surface-2:#1b252d; --surface-3:#22303a; --border:rgba(255,255,255,.08);
+      --text:#edf3f5; --muted:#a2b0b8; --faint:#74848d; --primary:#6ed7d1; --blue:#88baff; --accent:rgba(110,215,209,.14); --amber:#ffc078;
+      --max:1440px; --radius-xl:28px; --radius-lg:20px; --radius-md:16px; --radius-sm:12px; --shadow:0 26px 80px rgba(0,0,0,.38);
+      --font-body:'Satoshi',Inter,sans-serif; --font-display:'Zodiak',Georgia,serif;
+      --text-xs:clamp(.75rem,.7rem + .2vw,.875rem); --text-sm:clamp(.9rem,.84rem + .18vw,1rem); --text-base:clamp(1rem,.96rem + .18vw,1.08rem);
+      --text-lg:clamp(1.12rem,1rem + .55vw,1.4rem); --text-xl:clamp(1.55rem,1.18rem + 1.05vw,2.3rem); --text-2xl:clamp(2rem,1.4rem + 2vw,3.5rem);
+      --text-3xl:clamp(2.6rem,1.4rem + 4vw,5.2rem);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:var(--font-body);font-size:var(--text-base);line-height:1.65;color:var(--text);background:radial-gradient(circle at 0% 0%, rgba(110,215,209,.12), transparent 26%), radial-gradient(circle at 95% 10%, rgba(136,186,255,.10), transparent 20%), var(--bg)}
+    img,svg,canvas{display:block;max-width:100%;height:auto} a{text-decoration:none;color:inherit}
+    .container{width:min(var(--max),calc(100% - 3rem));margin:0 auto}
+    header{position:sticky;top:0;z-index:20;background:rgba(14,19,23,.76);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0}
+    .brand{display:flex;align-items:center;gap:.85rem;font-weight:700}.logo{width:2.35rem;height:2.35rem;padding:.4rem;border-radius:.8rem;background:linear-gradient(145deg, rgba(110,215,209,.16), rgba(136,186,255,.08));border:1px solid var(--border)}
+    .logo svg{width:100%;height:100%}.label{display:inline-flex;align-items:center;padding:.56rem .9rem;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid var(--border);font-size:var(--text-sm);color:var(--muted)}
+    main section{padding:clamp(2.5rem,5vw,5rem) 0}
+    
+    /* Hero Grid: More weight to the image (1.8fr) for a "Massive" horse */
+    .hero{padding-top:clamp(4rem,8vw,6rem)}
+    .hero-grid{display:grid;grid-template-columns:1.2fr 1.8fr;gap:4rem;align-items:center}
+    
+    .eyebrow{display:inline-flex;align-items:center;padding:.45rem .8rem;border-radius:999px;background:var(--accent);color:var(--primary);font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+    h1{font-family:var(--font-display);font-size:var(--text-3xl);line-height:1.05;margin:1.5rem 0;letter-spacing:-.03em}
+    
+    /* Reference Style: side-by-side stats and text */
+    .hero-side-layout {display: flex; gap: 2rem; align-items: flex-start; margin-top: 1.5rem;}
+    .lede {flex: 1; color: var(--muted); font-size: var(--text-lg); margin: 0;}
+    .stats-v {display: flex; flex-direction: column; gap: 0.75rem; width: 220px; flex-shrink: 0;}
+    .stat-card {background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15);}
+    .stat-card small {display: block; color: var(--faint); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; line-height: 1.2;}
+    .stat-card strong {display: block; font-size: 1.8rem; font-family: var(--font-display); color: var(--text); line-height: 1;}
+    .stat-card span {font-size: 0.9rem; color: var(--faint); font-weight: 400;}
+
+    /* Massive Image Styling */
+    .hero-image-wrap {width: 100%;}
+    .hero-image-wrap img {
+      width: 100%;
+      height: auto;
+      max-height: 85vh;
+      border-radius: var(--radius-xl);
+      object-fit: contain;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    /* Standard Sections from Base */
+    .section-top{display:grid;grid-template-columns:.9fr 1.1fr;gap:1.5rem;align-items:end;margin-bottom:2rem}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015));border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.5rem;box-shadow:var(--shadow)}
+    .terminal{background:#090d12;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:1.5rem;font-family:ui-monospace,SFMono-Regular,monospace;font-size:.85rem;white-space:pre-wrap;color:#cff7ff}
+    .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem}
+    .quote{border-left:2px solid rgba(110,215,209,.45);padding-left:1.5rem}
+    .note-box{background:linear-gradient(180deg, rgba(110,215,209,.08), rgba(110,215,209,.03));border:1px solid rgba(110,215,209,.24);border-radius:18px;padding:1.5rem}
+    
+    /* Charts and Tables */
+    .chart-wrap{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:18px;padding:1.5rem}
+    canvas{width:100% !important;height:400px !important}
+    table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+    th,td{padding:.82rem .45rem;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+    th{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--faint)}
+
+    @media (max-width: 1100px) {
+      .hero-grid, .section-top, .cards-3 {grid-template-columns: 1fr;}
+      .hero-side-layout {flex-direction: column;}
+      .stats-v {flex-direction: row; width: 100%; flex-wrap: wrap;}
+      .stat-card {flex: 1; min-width: 160px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 46L32 14L52 46" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24 46L32 33L40 46" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div><div>AIOGen</div><div class="fine" style="font-size:12px; color:var(--faint)">Benchmark Case Study</div></div>
+      </div>
+      <div class="label">AIOGen early stage - Public benchmark</div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">From the founder’s desk</span>
+          <h1>AIOGen is being built to make Kubernetes governance faster, leaner, and easier to justify in production.</h1>
+          
+          <div class="hero-side-layout">
+            <p class="lede">
+              This benchmark note shares one current checkpoint from AIOGen’s engineering journey. In an April 2026 pre-MVP benchmark, the system demonstrated sub-millisecond median policy-logic latency and low single-digit millisecond median full-handler latency under a defined k6 workload.
+            </p>
+            <div class="stats-v">
+              <div class="stat-card">
+                <small>Pure Policy Logic p50</small>
+                <strong>0.1047 <span>ms</span></strong>
+              </div>
+              <div class="stat-card">
+                <small>Full Handler p50</small>
+                <strong>3.5967 <span>ms</span></strong>
+              </div>
+              <div class="stat-card">
+                <small>Kyverno Reference Avg</small>
+                <strong>64.34 <span>ms</span></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-image-wrap">
+          <img src="winged-horse.png" alt="AIOGen Pegasus representing speed" />
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem;">
+        <div class="panel">
+            <h2 style="font-family:var(--font-display); margin-top:0;">Performance Checkpoint</h2>
+            <p style="color:var(--muted)">These results reflect the current state of the system at the time of measurement and do not represent the end of our optimization work. We focus on the "Inner Circle" to ensure the logic engine itself adds negligible overhead to your cluster.</p>
+        </div>
+        <aside class="panel" aria-label="Benchmark output excerpt">
+          <div class="terminal">INNER CIRCLE — symbol_latency (pure policy logic)
+Computing stats for: k6 concurrent direct (100 VUs / 1000 requests)
+Total samples : 1000
+Min           : 38.986 μs (0.0390 ms)
+Average       : 1184.542 μs (1.1845 ms)
+p50 (median)  : 104.689 μs (0.1047 ms)
+p95           : 7370.930 μs (7.3709 ms)
+p99           : 12376.100 μs (12.3761 ms)
+Max           : 17485.300 μs (17.4853 ms)
+
+OUTER CIRCLE — total_handler_latency (full handler)
+Computing stats for: k6 concurrent direct (100 VUs / 1000 requests)
+Total samples : 1000
+Min           : 154.808 μs (0.1548 ms)
+Average       : 14806.112 μs (14.8061 ms)
+p50 (median)  : 3596.660 μs (3.5967 ms)
+p95           : 56187.400 μs (56.1874 ms)
+p99           : 76382.900 μs (76.3829 ms)
+Max           : 106555.000 μs (106.5550 ms)</div>
+        </aside>
+      </div>
+    </section>
+
+
+   <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>What this benchmark shows</h2>
+          <p class="copy">The current pre-MVP run suggests that AIOGen’s core policy path can stay compact while keeping the full admission path within a low single-digit millisecond median under the stated test conditions. For platform teams, that matters because governance is easiest to adopt when it behaves like efficient infrastructure rather than recurring operational overhead.</p>
+        </div>
+        <div class="cards-3">
+          <article class="card"><h3>Compact core path</h3><p>The inner-circle metric isolates the pure policy-logic path and measured a median latency of 0.1047 ms in this run.</p></article>
+          <article class="card"><h3>Operationally relevant path</h3><p>The outer-circle metric measures the full handler path and recorded a median latency of 3.5967 ms under the same workload.</p></article>
+          <article class="card"><h3>Work in progress</h3><p>AIOGen is still under active optimization, so these numbers should be read as a documented checkpoint rather than a final ceiling.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>Latency trails</h2>
+          <p class="copy">The chart below shows the shape of the latency curve from best-case to tail events. For context, AIOGen was measured on a 2-core setup, while the Kyverno reference comes from a published run on a 32-core environment.</p>
+        </div>
+        <div style="display:block;">
+          <div class="panel">
+            <div class="chart-wrap">
+              <div class="chart-head">
+                <div>
+                  <strong>Response curve by percentile</strong>
+                  <p>Inner circle shows pure policy logic; outer circle shows the full admission path.</p>
+                </div>
+                <span class="label">AIOGen pre-MVP vs Kyverno </span>
+              </div>
+              <canvas id="latencyChart" aria-label="Latency percentile chart"></canvas>
+              
+            </div>
+          </div>
+          <div class="card">
+            <span class="eyebrow" style="margin-bottom:1rem;color:var(--amber);background:rgba(255,192,120,.10)">Operational question</span>
+            <h3 style="font-family:var(--font-display);font-size:var(--text-xl)">Is governance still overpriced?</h3>
+            <p>It often becomes overpriced when the cost of enforcement is measured only as a licensing line item and not as execution work inside the cluster. Every additional millisecond in the admission path represents compute time spent evaluating requests, holding resources, and reducing the amount of work the same hardware can process over time.</p>
+            <p>That is why latency matters beyond user experience across edge and cloud landscapes. In a busy Kubernetes environment, higher admission latency can translate into more CPU consumption, more memory pressure, more replicas to maintain throughput, and ultimately a higher infrastructure bill for the same governance outcome.</p>
+            <p>AIOGen’s benchmark story is aimed at that exact problem. If governance can execute with a smaller runtime footprint, then the platform team is not just reducing delay; it is reducing the compute cost of enforcement itself and making governance easier to justify operationally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>Benchmark statement</h2>          
+        </div>
+        <div class="panel note-box">
+          <p style="margin:0;color:var(--text);">In an April 2026 pre-MVP benchmark using a k6 concurrent direct workload of 100 virtual users across 1000 requests, AIOGen measured a median pure policy-logic latency of 0.1047 ms and a median full-handler latency of 3.5967 ms. For public benchmarking context, Kyverno’s published 100 VUs / 1000 iterations benchmark reports avg=64.34 ms, min=13.06 ms, med=51.61 ms, max=236.42 ms, p(90)=120.99 ms, and p(95)=160.19 ms. These figures describe different systems under different published methodologies and should be read as benchmark context rather than as a universal claim across all deployments.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>Founder’s note</h2>          
+        </div>
+        <div class="card quote">
+          <p style="margin:0;color:var(--text);">We are sharing these benchmark results to show where AIOGen stands today, not to suggest the journey is finished. Our focus remains on continuing to improve latency behavior, throughput efficiency, and deployment readiness as the product evolves.</p>
+          <div class="signature">— Founder</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>Methodology</h2>
+          <p class="copy">Visible methodology text makes the page safer and more trustworthy because it anchors the claim to a defined test profile and a disclosed public reference.</p>
+        </div>
+        <div class="panel">
+          <table aria-label="Benchmark methodology table">
+            <thead><tr><th>Item</th><th>Details</th></tr></thead>
+            <tbody>
+              <tr><td>AIOGen workload</td><td>k6 concurrent direct benchmark</td></tr>
+              <tr><td>AIOGen load profile</td><td>100 virtual users, 1000 requests</td></tr>
+              <tr><td>AIOGen inner-circle metric</td><td>symbol_latency, representing the pure policy-logic path</td></tr>
+              <tr><td>AIOGen outer-circle metric</td><td>total_handler_latency, representing the full admission handler path</td></tr>
+              <tr><td>AIOGen observed median</td><td>0.1047 ms inner-circle, 3.5967 ms outer-circle</td></tr>
+              <tr><td>AIOGen observed average</td><td>1.1845 ms inner-circle, 14.8061 ms outer-circle</td></tr>
+              <tr><td>Kyverno published benchmark <a href="https://nirmata.com/2024/01/30/the-need-for-speed-optimizing-kyvernos-performance-under-pressure/" target="_blank" rel="noopener noreferrer">[ref] </td><td> 100 virtual users / 1000 iterations, avg 64.34 ms, min 13.06 ms, median 51.61 ms, max 236.42 ms, p90 120.99 ms, p95 160.19 ms</td></tr>
+              <tr><td>Hardware context</td><td>AIOGen benchmark was run on a 2-core setup, while Kyverno’s published reference comes from a substantially larger 32-core environment.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-top">
+          <h2>Disclaimer</h2>
+          
+        </div>
+        <div class="panel">
+          <ol>
+            <li>AIOGen benchmark figures on this page are from an internal pre-MVP benchmark run recorded in April 2026 under the methodology described above.</li>
+            <li>Kyverno published benchmark <a href="https://nirmata.com/2024/01/30/the-need-for-speed-optimizing-kyvernos-performance-under-pressure/" target="_blank" rel="noopener noreferrer">[ref] reports benchmark for 100VUs, 1000 iterations</a></li>
+            <li>These benchmark results are presented as point-in-time engineering measurements under controlled conditions and should not be interpreted as guarantees of future production performance.</li>
+            <li>Actual performance may vary depending on hardware profile, Kubernetes version, request shape, policy count, policy complexity, admission configuration, and surrounding system activity.</li>
+            <li>AIOGen remains under active optimization, and published metrics may change as the product evolves.</li>
+            <li>Where third-party products are referenced, such references are methodology-bound and are provided for context only.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('latencyChart');
+      if (!ctx || !window.Chart) return;
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Min', 'Average', 'p50', 'p95', 'p99', 'Max'],
+          datasets: [
+            {
+              label: 'AIOGen inner circle',
+              data: [0.0390, 1.1845, 0.1047, 7.3709, 12.3761, 17.4853],
+              borderColor: '#6ed7d1',
+              backgroundColor: 'rgba(110,215,209,.12)',
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 4,
+              pointHoverRadius: 5,
+              fill: false
+            },
+            {
+              label: 'AIOGen outer circle',
+              data: [0.1548, 14.8061, 3.5967, 56.1874, 76.3829, 106.5550],
+              borderColor: '#88baff',
+              backgroundColor: 'rgba(136,186,255,.12)',
+              tension: 0.3,
+              borderWidth: 3,
+              pointRadius: 4,
+              pointHoverRadius: 5,
+              fill: false
+            },
+            {
+              label: 'Kyverno published benchmark',
+              data: [13.06, 64.34, 51.61, 160.19, null, 236.42],
+              borderColor: '#ffc078',
+              backgroundColor: 'rgba(255,192,120,.12)',
+              borderDash: [8,6],
+              tension: 0.25,
+              borderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 5,
+              spanGaps: false,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#edf3f5' } },
+            tooltip: { callbacks: { label: (context) => context.parsed.y == null ? `${context.dataset.label}: not published` : `${context.dataset.label}: ${context.parsed.y.toFixed(4)} ms` } }
+          },
+          scales: {
+            x: { ticks: { color: '#a2b0b8' }, grid: { color: 'rgba(255,255,255,.05)' } },
+            y: {
+              ticks: { color: '#a2b0b8', callback: (value) => value + ' ms' },
+              grid: { color: 'rgba(255,255,255,.05)' },
+              title: { display: true, text: 'Latency', color: '#a2b0b8' }
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

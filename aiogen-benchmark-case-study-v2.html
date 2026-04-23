@@ -180,7 +180,7 @@ Max           : 106555.000 μs (106.5550 ms)</div>
               <tr><td>AIOGen outer-circle metric</td><td>total_handler_latency, representing the full admission handler path</td></tr>
               <tr><td>AIOGen observed median</td><td>0.1047 ms inner-circle, 3.5967 ms outer-circle</td></tr>
               <tr><td>AIOGen observed average</td><td>1.1845 ms inner-circle, 14.8061 ms outer-circle</td></tr>
-              <tr><td>Kyverno public reference</td><td>Nirmata and CNCF blog benchmark, 100 virtual users / 1000 iterations, avg 64.34 ms, min 13.06 ms, median 51.61 ms, max 236.42 ms, p90 120.99 ms, p95 160.19 ms</td></tr>
+              <tr><td>Kyverno published benchmark <a href="https://nirmata.com/2024/01/30/the-need-for-speed-optimizing-kyvernos-performance-under-pressure/" target="_blank" rel="noopener noreferrer">[ref] </td><td> 100 virtual users / 1000 iterations, avg 64.34 ms, min 13.06 ms, median 51.61 ms, max 236.42 ms, p90 120.99 ms, p95 160.19 ms</td></tr>
               <tr><td>Hardware context</td><td>AIOGen benchmark was run on a 2-core setup, while Kyverno’s published reference comes from a substantially larger 32-core environment.</td></tr>
             </tbody>
           </table>
@@ -197,7 +197,7 @@ Max           : 106555.000 μs (106.5550 ms)</div>
         <div class="panel">
           <ol>
             <li>AIOGen benchmark figures on this page are from an internal pre-MVP benchmark run recorded in April 2026 under the methodology described above.</li>
-            <li>Kyverno reference figures on this page are taken from the public Nirmata benchmark post republished by CNCF, which reports the 100 VUs / 1000 iterations results as avg 64.34 ms, min 13.06 ms, median 51.61 ms, max 236.42 ms, p90 120.99 ms, and p95 160.19 ms.</li>
+            <li>Kyverno published benchmark <a href="https://nirmata.com/2024/01/30/the-need-for-speed-optimizing-kyvernos-performance-under-pressure/" target="_blank" rel="noopener noreferrer">[ref] reports benchmark for 100VUs, 1000 iterations</a></li>
             <li>These benchmark results are presented as point-in-time engineering measurements under controlled conditions and should not be interpreted as guarantees of future production performance.</li>
             <li>Actual performance may vary depending on hardware profile, Kubernetes version, request shape, policy count, policy complexity, admission configuration, and surrounding system activity.</li>
             <li>AIOGen remains under active optimization, and published metrics may change as the product evolves.</li>

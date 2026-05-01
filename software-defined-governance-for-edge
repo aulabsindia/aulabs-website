@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AIOGen Lite & Edge | Software‑Defined Governance for Kubernetes & k3s</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%);
+      color: #e2e8f0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 16px 80px;
+    }
+
+    /* HERO */
+
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      inset: -160px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.35) 0, transparent 55%),
+        radial-gradient(circle at 82% 80%, rgba(168, 85, 247, 0.35) 0, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.18) 0, transparent 60%);
+      filter: blur(6px);
+      opacity: 0.9;
+      z-index: -1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.9);
+      color: #dbeafe;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.9));
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.45);
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.45);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, #f9fafb, #38bdf8, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #cbd5f5;
+      max-width: 780px;
+      margin: 0 auto;
+      font-size: 0.99rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      padding: 4px 14px;
+      background: linear-gradient(135deg, rgba(8, 47, 73, 0.9), rgba(30, 64, 175, 0.9));
+      color: #e0f2fe;
+      margin-top: 14px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .hero-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.4);
+    }
+
+    /* SECTION TITLES */
+
+    .section-title {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #e5e7eb;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #a5b4fc;
+      margin-bottom: 26px;
+      font-size: 0.97rem;
+    }
+
+    /* VARIANTS */
+
+    .variants {
+      margin-bottom: 52px;
+    }
+
+    .variants-lead {
+      text-align: center;
+      font-size: 0.92rem;
+      color: #c4b5fd;
+      max-width: 780px;
+      margin: 0 auto 20px;
+    }
+
+    .variant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .variant-card {
+      position: relative;
+      padding: 20px 18px 18px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.96), rgba(15, 23, 42, 0.98));
+      border: 1px solid #1f2937;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
+      overflow: hidden;
+    }
+
+    .variant-card--lite {
+      background: radial-gradient(circle at top left, rgba(6, 95, 70, 0.98), rgba(15, 23, 42, 0.98));
+    }
+
+    .variant-card--edge {
+      background: radial-gradient(circle at top left, rgba(88, 28, 135, 0.97), rgba(30, 64, 175, 0.95));
+    }
+
+    .variant-glow {
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(16, 185, 129, 0.18) 0, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(251, 191, 36, 0.18) 0, transparent 55%);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .variant-card--edge .variant-glow {
+      background:
+        radial-gradient(circle at 15% 0%, rgba(236, 72, 153, 0.25) 0, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.3) 0, transparent 55%);
+    }
+
+    .variant-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bfdbfe;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .variant-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .variant-tagline {
+      font-size: 0.86rem;
+      color: #e0f2fe;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .variant-body {
+      font-size: 0.85rem;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .variant-meta {
+      font-size: 0.78rem;
+      color: #e0e7ff;
+      opacity: 0.95;
+      position: relative;
+    }
+
+    .variant-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .variant-pill {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(196, 181, 253, 0.9);
+      color: #f9fafb;
+      background: linear-gradient(135deg, rgba(129, 140, 248, 0.9), rgba(56, 189, 248, 0.9));
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+      white-space: nowrap;
+    }
+
+    .variant-pill--lite {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(52, 211, 153, 0.9));
+      border-color: rgba(110, 231, 183, 0.9);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+    }
+
+    .variant-pill--edge {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.95), rgba(129, 140, 248, 0.95));
+      border-color: rgba(251, 113, 133, 0.9);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.8);
+    }
+
+    .variant-ribbon {
+      position: absolute;
+      top: 16px;
+      right: -40px;
+      transform: rotate(32deg);
+      background: linear-gradient(135deg, #22c55e, #84cc16);
+      color: #052e16;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 50px;
+      box-shadow: 0 12px 28px rgba(22, 163, 74, 0.6);
+      z-index: 1;
+    }
+
+    /* LAYERED ARCHITECTURE */
+
+    .layers-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 26px;
+      align-items: center;
+      margin-bottom: 52px;
+    }
+
+    @media (max-width: 900px) {
+      .layers-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .layer-stack {
+      position: relative;
+      padding: 30px 20px 38px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.97), #020617 80%);
+      border-radius: 18px;
+      border: 1px solid rgba(30, 64, 175, 0.9);
+      box-shadow: 0 26px 65px rgba(15, 23, 42, 0.95);
+    }
+
+    .layer-stack::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: conic-gradient(from 140deg, rgba(56, 189, 248, 0.75), rgba(168, 85, 247, 0.75), rgba(249, 115, 22, 0.75), rgba(56, 189, 248, 0.75));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.85;
+    }
+
+    .layer {
+      position: relative;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #020617, #111827);
+      border: 1px solid #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .layer:last-child { margin-bottom: 0; }
+
+    .layer-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    .layer-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .layer-desc {
+      font-size: 0.8rem;
+      color: #cbd5f5;
+      margin-top: 2px;
+    }
+
+    .layer-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .layer-chip {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+      background: linear-gradient(135deg, rgba(30, 64, 175, 0.9), rgba(15, 23, 42, 0.9));
+    }
+
+    .layer--hardware { border-left: 3px solid #0ea5e9; }
+    .layer--linux    { border-left: 3px solid #22c55e; }
+    .layer--k8s      { border-left: 3px solid #f59e0b; }
+    .layer--aiogen   { border-left: 3px solid #a855f7; }
+    .layer--apps     { border-left: 3px solid #f97316; }
+
+    .layer-arrow {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 12px;
+      background: linear-gradient(to bottom, rgba(148, 163, 184, 0.3), rgba(15, 23, 42, 1));
+    }
+
+    .layer-arrow::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 12px;
+      transform: translateX(-50%);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid #1f2937;
+    }
+
+    .layer-arrow:nth-of-type(1) { top: 78px; }
+    .layer-arrow:nth-of-type(2) { top: 140px; }
+    .layer-arrow:nth-of-type(3) { top: 202px; }
+    .layer-arrow:nth-of-type(4) { top: 264px; }
+
+    .layer-note {
+      margin-top: 22px;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+      border-left: 3px solid rgba(56, 189, 248, 0.9);
+      padding-left: 10px;
+    }
+
+    .layer-text {
+      padding: 12px 4px;
+      font-size: 0.9rem;
+      color: #c7d2fe;
+    }
+
+    .layer-text h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #e5e7eb;
+    }
+
+    .layer-text p {
+      margin-bottom: 10px;
+    }
+
+    .layer-text ul {
+      list-style: none;
+    }
+
+    .layer-text li {
+      margin-bottom: 6px;
+      color: #cbd5f5;
+      font-size: 0.88rem;
+    }
+
+    .layer-text li::before {
+      content: "●";
+      font-size: 0.5rem;
+      color: #38bdf8;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* PIPELINE WORKFLOWS */
+
+    .workflows {
+      margin-top: 10px;
+    }
+
+    .pipeline {
+      border-radius: 22px;
+      padding: 22px 18px 24px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow:
+        0 0 40px rgba(56, 189, 248, 0.25),
+        0 20px 50px rgba(15, 23, 42, 0.95);
+    }
+
+    .pipeline-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .pipeline-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 4px;
+    }
+
+    .pipeline-subtitle {
+      font-size: 0.88rem;
+      color: #c4b5fd;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+      margin-top: 16px;
+    }
+
+    .lane {
+      position: relative;
+      padding-top: 18px;
+    }
+
+    .lane-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #a5b4fc;
+      margin-bottom: 4px;
+    }
+
+    .lane-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 10px;
+    }
+
+    .lane-road {
+      position: relative;
+      padding: 16px 10px 8px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.9));
+      border: 1px solid rgba(129, 140, 248, 0.8);
+      overflow: hidden;
+    }
+
+    .lane-road.lite {
+      background: radial-gradient(circle at top, rgba(6, 95, 70, 0.9), rgba(21, 128, 61, 0.9));
+      border-color: rgba(52, 211, 153, 0.9);
+    }
+
+    .lane-track {
+      position: absolute;
+      top: 30px;
+      left: 10px;
+      right: 10px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.5), rgba(56, 189, 248, 0.9));
+    }
+
+    .lane-road.edge .lane-track {
+      background: linear-gradient(90deg, rgba(251, 113, 133, 0.6), rgba(129, 140, 248, 0.95));
+    }
+
+    .lane-track::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #f9fafb;
+      box-shadow: 0 0 0 4px rgba(248, 250, 252, 0.35);
+    }
+
+    .lane-step-row {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .lane-step {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .lane-step-dot {
+      position: absolute;
+      top: 3px;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 2px solid #f9fafb;
+      background: radial-gradient(circle at top, #38bdf8, #0f172a);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35);
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0b1120;
+      font-weight: 600;
+    }
+
+    .lane-road.lite .lane-step-dot {
+      background: radial-gradient(circle at top, #4ade80, #052e16);
+      box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.4);
+    }
+
+    .lane-step-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #f9fafb;
+      margin-bottom: 2px;
+    }
+
+    .lane-step-text {
+      font-size: 0.78rem;
+      color: #e0f2fe;
+    }
+
+    .lane-footnote {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #e5e7eb;
+    }
+
+    .lane-footnote strong {
+      color: #f97316;
+    }
+
+    @media (max-width: 600px) {
+      .lane-road { margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-orbit"></div>
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        AIOGen - The Pegasus for Governance on Edge
+      </div>
+      <h1>Software‑Defined Governance for Edge</h1>
+      <p class="hero-subtitle">
+        Hardware, Linux, and Kubernetes define how your system runs. AIOGen defines how it behaves.
+      </p>
+      <p>
+        AIOGen inserts a native policy control layer into the Kubernetes admission path so you can express
+        governance as software—whether that software is a pre‑built Go policy pack or AI‑generated policy objects
+        compiled from intent.
+      </p>
+      <div class="hero-pill">
+        <span class="hero-pill-dot"></span>
+        Software‑defined governance = rules as code, enforced at the control plane boundary
+      </div>
+    </section>
+
+    <!-- VARIANTS -->
+    <section class="variants">
+      <h2 class="section-title">Two Ways to Realize Software‑Defined Governance</h2>
+      <p class="section-subtitle">
+        Both variants share the same engine and admission hook. They differ in how policy software is created.
+      </p>
+      <p class="variants-lead">
+        <strong>AIOGen Lite</strong> uses a curated native policy pack bundled with the engine.  
+        <strong>AIOGen Edge</strong> adds co‑pilot so you can generate site‑specific Go policies from intent.
+      </p>
+
+      <div class="variant-grid">
+        <div class="variant-card variant-card--lite">
+          <div class="variant-glow"></div>
+          <div class="variant-label">Governance Mode 1</div>
+          <div class="variant-name">AIOGen Lite</div>
+          <div class="variant-tagline">Software‑defined governance out‑of‑the‑box.</div>
+          <p class="variant-body">
+            AIOGen Lite includes dozens of Go policies compiled into the engine. Once deployed as validating
+            and mutating admission webhooks, it intercepts Kubernetes API requests and applies governance rules
+            with sub‑millisecond latency—no co‑pilot, no external control plane.
+          </p>
+          <p class="variant-meta">
+            Ideal when you want a strong baseline of policy‑as‑code without writing code yourself.
+          </p>
+          <div class="variant-pill-row">
+            <span class="variant-pill variant-pill--lite">20+ in‑built Go policies</span>
+            <span class="variant-pill variant-pill--lite">Runs fully offline</span>
+            <span class="variant-pill variant-pill--lite">Perfect for k3s edge clusters</span>
+          </div>
+        </div>
+
+        <div class="variant-card variant-card--edge">
+          <div class="variant-glow"></div>
+          <div class="variant-ribbon">Policy‑as‑Intent</div>
+          <div class="variant-label">Governance Mode 2</div>
+          <div class="variant-name">AIOGen Edge</div>
+          <div class="variant-tagline">Software‑defined governance that adapts per site.</div>
+          <p class="variant-body">
+            AIOGen Edge includes the co‑pilot powered by CNHyRAG. Platform teams express governance
+            as intent, and co‑pilot generates low‑latency Go
+            admission policy objects. Compiled policy packs are then attached to the same engine for site‑specific enforcement.
+          </p>
+          <p class="variant-meta">
+            Ideal for large edge and fleet of clusters where governance must differ per tenant, region, or SLA.
+          </p>
+          <div class="variant-pill-row">
+            <span class="variant-pill variant-pill--edge">AI‑generated Go policy objects</span>
+            <span class="variant-pill variant-pill--edge">Tenant / site packs</span>
+            <span class="variant-pill variant-pill--edge">Central intent, local enforcement</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYERED ARCHITECTURE -->
+    <section>
+      <h2 class="section-title">Layered Architecture with a Governance Layer</h2>
+      <p class="section-subtitle">
+        AIOGen adds a dedicated governance layer between Kubernetes / k3s and workloads, turning policies into
+        first‑class software artifacts.
+      </p>
+
+      <div class="layers-grid">
+        <div class="layer-stack">
+          <div class="layer layer--hardware">
+            <div class="layer-label">
+              <span class="layer-badge">Layer 1 • Hardware</span>
+              <span class="layer-name">Edge Infrastructure</span>
+              <span class="layer-desc">Rugged servers, base stations</span>
+            </div>
+            <span class="layer-chip">Raw compute, network, storage</span>
+          </div>
+
+          <div class="layer-arrow"></div>
+
+          <div class="layer layer--linux">
+            <div class="layer-label">
+              <span class="layer-badge">Layer 2 • Virtualization / OS</span>
+              <span class="layer-name">Linux & Hypervisors</span>
+              <span class="layer-desc">Hardened kernels, isolation, container runtime</span>
+            </div>
+            <span class="layer-chip">KVM • containerd • secure boot</span>
+          </div>
+
+          <div class="layer-arrow"></div>
+
+          <div class="layer layer--k8s">
+            <div class="layer-label">
+              <span class="layer-badge">Layer 3 • Orchestration</span>
+              <span class="layer-name">Kubernetes / k3s</span>
+              <span class="layer-desc">API server, scheduler, controllers</span>
+            </div>
+            <span class="layer-chip">Defines how workloads are scheduled</span>
+          </div>
+
+          <div class="layer-arrow"></div>
+
+          <div class="layer layer--aiogen">
+            <div class="layer-label">
+              <span class="layer-badge">Layer 4 • Governance</span>
+              <span class="layer-name">AIOGen Policy Control Layer</span>
+              <span class="layer-desc">Native Go policies at the admission boundary</span>
+            </div>
+            <span class="layer-chip">Defines how the system is allowed to behave</span>
+          </div>
+
+          <div class="layer-arrow"></div>
+
+          <div class="layer layer--apps">
+            <div class="layer-label">
+              <span class="layer-badge">Layer 5 • Workloads</span>
+              <span class="layer-name">Applications & CNFs</span>
+              <span class="layer-desc">MEC apps, IIoT, smart city, V2X</span>
+            </div>
+            <span class="layer-chip">Governed by AIOGen on every request</span>
+          </div>
+
+          <p class="layer-note">
+            Instead of static documents and tribal knowledge, policies live as Go code in the governance
+            layer. Kubernetes admission controllers ensure nothing enters the cluster without passing
+            through these rules.
+          </p>
+        </div>
+
+        <div class="layer-text">
+          <h3>Software‑Defined Governance in Practice</h3>
+          <p>
+            Both variants use the same enforcement point: Kubernetes admission controllers that intercept
+            requests after authN/authZ but before persistence.
+          </p>
+          <ul>
+            <li><strong>AIOGen Lite:</strong> governance = shipped policy pack. You configure which Go policies are active; the engine enforces them for all workloads.</li>
+            <li><strong>AIOGen Edge:</strong> governance = policy‑as‑intent. Co‑pilot emits Go policy objects; the engine enforces those across clusters and sites.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINE WORKFLOWS -->
+    <section class="workflows">
+      <div class="pipeline">
+        <div class="pipeline-header">
+          <div class="pipeline-title">Governance Pipelines: Lite and Edge</div>
+          <div class="pipeline-subtitle">
+            Two colorful lanes, one destination: native Go policies governing the Kubernetes admission flow.
+          </div>
+        </div>
+
+        <div class="pipeline-grid">
+          <!-- Lane: AIOGen Lite -->
+          <div class="lane">
+            <div class="lane-label">Pipeline 1</div>
+            <div class="lane-name">AIOGen Lite – Pre‑built Governance</div>
+            <div class="lane-road lite">
+              <div class="lane-track"></div>
+              <div class="lane-step-row">
+                <div class="lane-step">
+                  <div class="lane-step-dot">1</div>
+                  <div class="lane-step-title">Deploy Engine + Policy Pack</div>
+                  <div class="lane-step-text">
+                    Install AIOGen Lite. The engine and its 20+ native Go policies register as validating
+                    and mutating admission webhooks.
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">2</div>
+                  <div class="lane-step-title">Activate Governance Profile</div>
+                  <div class="lane-step-text">
+                    Enable and configure built‑in policies: Pod security, resource limits, registry rules,
+                    and other guardrails.
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">3</div>
+                  <div class="lane-step-title">Admission Pipeline Enforces Rules</div>
+                  <div class="lane-step-text">
+                    As workloads are created or updated, AIOGen Lite evaluates each request in tens of
+                    microseconds and allows, mutates, or rejects it.
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">4</div>
+                  <div class="lane-step-title">Continuous, Offline‑Capable Governance</div>
+                  <div class="lane-step-text">
+                    Even if the cluster is air‑gapped, policies keep running locally as compiled Go code
+                    with no external dependencies.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="lane-footnote">
+              <strong>Best fit:</strong> k3s edge clusters, brownfield Kubernetes, and teams that want immediate,
+              opinionated governance with minimal setup.
+            </div>
+          </div>
+
+          <!-- Lane: AIOGen Edge -->
+          <div class="lane">
+            <div class="lane-label">Pipeline 2</div>
+            <div class="lane-name">AIOGen Edge – Intent‑Driven Governance</div>
+            <div class="lane-road edge">
+              <div class="lane-track"></div>
+              <div class="lane-step-row">
+                <div class="lane-step">
+                  <div class="lane-step-dot">1</div>
+                  <div class="lane-step-title">Describe Governance Intent</div>
+                  <div class="lane-step-text">
+                    Example#1: 
+                    “For mobility or agri-tech, only allow container images from approved vendor registries, enforce SBOM validation, 
+                    and block unsigned workloads across all edge nodes.”
+                  </div>
+                  <div class="lane-step-text">
+                    Example#2: 
+                    “For 5G in telco, enforce strict slice isolation, signed images only, per‑site
+                    quota and burst during events.”
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">2</div>
+                  <div class="lane-step-title">Co‑Pilot Generates Go policy objects</div>
+                  <div class="lane-step-text">
+                    In a central environment, co‑pilot (AI) turns that intent into strongly‑typed
+                    Go admission policy objects, including cross‑resource and external checks.
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">3</div>
+                  <div class="lane-step-title">Compile, Test, and Package</div>
+                  <div class="lane-step-text">
+                    policy objects are compiled, validated, signed, and grouped into policy packs for specific
+                    tenants, MEC regions, or factories.
+                  </div>
+                </div>
+                <div class="lane-step">
+                  <div class="lane-step-dot">4</div>
+                  <div class="lane-step-title">Attach Packs to Sites and Enforce</div>
+                  <div class="lane-step-text">
+                    Each cluster’s AIOGen engine loads the appropriate pack and enforces those policies
+                    locally at admission time, with no AI runtime at the edge.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="lane-footnote">
+              <strong>Best fit:</strong> Edge deployments, industrial IoT, and smart cities where governance
+              differs by tenant and location but must still run as fast, native Go at the edge.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

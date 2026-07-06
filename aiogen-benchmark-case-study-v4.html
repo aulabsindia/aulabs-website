@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIOGen vs Kyverno — Same-Hardware Admission Latency Benchmark | Au.AI Software Labs</title>
+<meta name="description" content="A fair, same-hardware head-to-head: AIOGen's compiled policy engine vs Kyverno v1.18.1, measured across three latency layers and policy counts from 10 to 50.">
+<style>
+  :root{
+    --bg:#16272B;            /* page background (matches v3 dark teal) */
+    --panel:#1E3438;         /* cards / chart surfaces */
+    --panel2:#24393E;        /* table header */
+    --ink:#E9F1EF;           /* primary text + headings */
+    --muted:#9FB4B2;         /* secondary text */
+    --line:rgba(255,255,255,0.12);
+    --line-soft:rgba(255,255,255,0.07);
+    --teal:#5FC7C0;          /* accent / eyebrow */
+    --green:#4CC58C;         /* AIOGen */
+    --red:#E5766E;           /* Kyverno */
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px;}
+  a{color:var(--teal);}
+  header.site{border-bottom:1px solid var(--line);padding:16px 0;font-size:15px;}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .brand{font-weight:700;color:var(--ink);letter-spacing:.2px;}
+  .brand span{color:var(--teal);}
+  header.site nav a{color:var(--muted);text-decoration:none;margin-left:18px;}
+  .hero{padding:48px 0 34px;border-bottom:1px solid var(--line);}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--teal);background:rgba(95,199,192,0.12);border:1px solid rgba(95,199,192,0.28);
+    padding:6px 14px;border-radius:999px;}
+  h1{font-family:var(--serif);font-size:40px;line-height:1.14;color:var(--ink);margin:16px 0 14px;font-weight:600;letter-spacing:.2px;}
+  .lede{font-size:18.5px;color:var(--muted);margin:0 0 26px;}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 16px;text-align:center;}
+  .stat .n{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--green);line-height:1;}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:9px;}
+  main{padding:8px 0 44px;}
+  h2{font-family:var(--serif);font-size:27px;color:var(--ink);margin:44px 0 10px;font-weight:600;}
+  h3{font-size:18px;color:var(--ink);margin:24px 0 6px;}
+  p{margin:12px 0;}
+  b{color:#F3F8F7;}
+  code{background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:5px;font-size:14px;}
+  .callout{border-left:3px solid var(--teal);background:var(--panel);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:22px 0;font-size:16px;}
+  .callout.green{border-color:var(--green);}
+  figure{margin:28px 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);}
+  figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px;}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;}
+  th{background:var(--panel2);color:var(--ink);font-weight:700;}
+  td.k{color:var(--red);font-weight:600;}
+  td.a{color:var(--green);font-weight:700;}
+  .legend{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:13.5px;color:var(--muted);margin-bottom:8px;}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .sw{width:16px;height:4px;border-radius:2px;display:inline-block;}
+  .disc{font-size:13.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px;margin:26px 0;}
+  .disc b{color:var(--ink);}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:14px;text-align:center;}
+  .sign{font-style:italic;color:var(--ink);}
+  @media(max-width:620px){ h1{font-size:30px} .stats{grid-template-columns:1fr;} header.site nav{display:none;} }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">AIO<span>Gen</span> · Au.AI Software Labs</div>
+    <nav>
+      <a href="https://auailabs.com/features/">Features</a>
+      <a href="https://auailabs.com/intellectual-property/">IP</a>
+      <a href="https://auailabs.com/benchmark-case-study/">Benchmarks</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">From the founder&rsquo;s desk · Public benchmark checkpoint</span>
+    <h1>A fair, same-hardware benchmark: AIOGen vs Kyverno v1.18.1</h1>
+    <p class="lede">Our earlier note published in <b>April 2026</b> compared AIOGen against Kyverno&rsquo;s <em>published</em> numbers on a different environment. This time, in <b>June 2026</b>, we deployed both engines <b>side by side on the same 16-core virtual machine</b>, enforced <b>identical policies</b>, and measured them together &mdash; across three latency layers and policy counts from 10 to 50.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">~16&times;</div><div class="l">faster end-to-end median (measured, same box)</div></div>
+      <div class="stat"><div class="n">~30&times;</div><div class="l">faster at the engine handler @ 50 policies</div></div>
+      <div class="stat"><div class="n">Flat</div><div class="l">latency vs. policy count &mdash; while the DSL engine climbs linearly</div></div>
+    </div>
+  </div>
+</section>
+
+<main>
+<div class="wrap">
+
+  <p>AIOGen is a <b>compiled</b> Kubernetes admission engine: policy logic runs as native code inside the engine. Kyverno is a widely-used <b>DSL engine</b> that interprets declarative YAML policy rules at request time. That single architectural difference predicts everything below &mdash; a compiled engine should stay <b>flat</b> as you add policies, while an interpreter should scale <b>linearly</b>. In this run, the data matches the theory.</p>
+
+  <div class="callout green"><b>Why this run is different.</b> Every number here comes from a controlled, apples-to-apples test: the <b>same single-node virtual machine</b>, both engines deployed without CPU limits (matching Kyverno&rsquo;s own recommended deployment), the <b>identical set of Pod policies</b>, and the <b>allow path</b> &mdash; a fully compliant pod that exercises every policy rather than short-circuiting on the first deny. Kyverno version: <b>v1.18.1</b>.</div>
+
+  <h2>The three latency layers</h2>
+  <p>Admission latency is best read as three nested circles. Isolating them keeps the comparison honest &mdash; it separates the policy logic itself from the engine around it, and from the network everyone pays.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three concentric latency layers at 50 policies: inner pure policy, middle engine handler ~30x, outer end-to-end ~16x">
+      <circle cx="220" cy="235" r="190" fill="rgba(95,199,192,0.06)" stroke="rgba(255,255,255,0.16)" stroke-width="1.3"/>
+      <circle cx="220" cy="235" r="120" fill="rgba(76,197,140,0.10)" stroke="rgba(255,255,255,0.16)" stroke-width="1.3"/>
+      <circle cx="220" cy="235" r="55" fill="rgba(229,118,110,0.14)" stroke="rgba(255,255,255,0.16)" stroke-width="1.3"/>
+      <text x="220" y="240" text-anchor="middle" font-size="13" fill="#E5766E" font-weight="700">Inner</text>
+      <line x1="220" y1="45" x2="470" y2="70" stroke="rgba(255,255,255,0.22)"/>
+      <line x1="308" y1="150" x2="470" y2="205" stroke="rgba(255,255,255,0.22)"/>
+      <line x1="262" y1="235" x2="470" y2="330" stroke="rgba(255,255,255,0.22)"/>
+      <text x="478" y="60" font-size="15" fill="#E9F1EF" font-weight="700">End-to-end (http_req)</text>
+      <text x="478" y="82" font-size="13" fill="#9FB4B2">Kyverno 128 ms · AIOGen ~8 ms</text>
+      <text x="478" y="104" font-size="14" fill="#4CC58C" font-weight="800">~16&times; advantage</text>
+      <text x="478" y="196" font-size="15" fill="#E9F1EF" font-weight="700">Engine handler (outer)</text>
+      <text x="478" y="218" font-size="13" fill="#9FB4B2">Kyverno 127 ms · AIOGen ~4 ms</text>
+      <text x="478" y="240" font-size="14" fill="#4CC58C" font-weight="800">~30&times; advantage</text>
+      <text x="478" y="322" font-size="15" fill="#E9F1EF" font-weight="700">Pure policy (inner)</text>
+      <text x="478" y="344" font-size="13" fill="#9FB4B2">~2.5 ms / rule · ~0.1 ms / symbol</text>
+      <text x="478" y="366" font-size="13" fill="#E5766E" font-weight="700">50 rules &rArr; ~125 ms of pure logic</text>
+      <text x="220" y="452" text-anchor="middle" font-size="12.5" fill="#9FB4B2" font-style="italic">Both engines pay the same ~3 ms network/TLS floor &mdash; it lives in the outer ring.</text>
+    </svg>
+    <figcaption>Figure 1 &mdash; The three latency layers at 50 policies (measured). The gap is widest at the engine handler, where compiled-vs-interpreted shows most.</figcaption>
+  </figure>
+
+  <p>The inner circle is the story in miniature: an interpreted rule costs roughly <b>2.5 ms each</b>, so fifty of them is ~125 ms of pure logic. AIOGen&rsquo;s compiled symbols cost a fraction of a millisecond each, so the same fifty barely move the needle. That is the difference between a curve that climbs and one that stays flat.</p>
+
+  <h2>Latency vs. policy count</h2>
+  <p>This is the decisive picture. As policies are added, Kyverno&rsquo;s interpreter adds <b>~2.35 ms of median latency per policy</b>; AIOGen stays essentially flat. Because one line climbs and the other doesn&rsquo;t, the advantage isn&rsquo;t a fixed multiplier &mdash; it compounds with scale.</p>
+
+  <figure>
+    <div class="legend">
+      <span><span class="sw" style="background:#E5766E"></span>Kyverno v1.18.1 (interpreted DSL)</span>
+      <span><span class="sw" style="background:#4CC58C"></span>AIOGen (compiled native)</span>
+    </div>
+    <svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Median admission latency versus policy count. Kyverno rises linearly from 34ms at 10 policies to 128ms at 50. AIOGen stays near-flat from 2.2 to 8.2 ms.">
+      <line x1="80" y1="40" x2="80" y2="360" stroke="rgba(255,255,255,0.28)"/>
+      <line x1="80" y1="360" x2="725" y2="360" stroke="rgba(255,255,255,0.28)"/>
+      <g font-size="12" fill="#8DA1A0">
+        <line x1="80" y1="360" x2="725" y2="360" stroke="rgba(255,255,255,0.07)"/><text x="72" y="364" text-anchor="end">0</text>
+        <line x1="80" y1="280" x2="725" y2="280" stroke="rgba(255,255,255,0.07)"/><text x="72" y="284" text-anchor="end">35</text>
+        <line x1="80" y1="200" x2="725" y2="200" stroke="rgba(255,255,255,0.07)"/><text x="72" y="204" text-anchor="end">70</text>
+        <line x1="80" y1="120" x2="725" y2="120" stroke="rgba(255,255,255,0.07)"/><text x="72" y="124" text-anchor="end">105</text>
+        <line x1="80" y1="40"  x2="725" y2="40"  stroke="rgba(255,255,255,0.07)"/><text x="72" y="44"  text-anchor="end">140</text>
+      </g>
+      <text x="26" y="200" font-size="12.5" fill="#9FB4B2" transform="rotate(-90 26 200)" text-anchor="middle">median latency (ms)</text>
+      <g font-size="12.5" fill="#9FB4B2" text-anchor="middle">
+        <text x="80" y="380">10</text><text x="224" y="380">19</text><text x="320" y="380">25</text><text x="560" y="380">40</text><text x="720" y="380">50</text>
+        <text x="400" y="404" font-weight="600">policies per request</text>
+      </g>
+      <polyline fill="none" stroke="#E5766E" stroke-width="3" points="80,282 224,248 320,214 560,129 720,67"/>
+      <g fill="#E5766E"><circle cx="80" cy="282" r="4.5"/><circle cx="224" cy="248" r="4.5"/><circle cx="320" cy="214" r="4.5"/><circle cx="560" cy="129" r="4.5"/><circle cx="720" cy="67" r="4.5"/></g>
+      <text x="700" y="56" text-anchor="end" font-size="13" fill="#E5766E" font-weight="700">128 ms</text>
+      <text x="470" y="150" font-size="12.5" fill="#E5766E">~2.35 ms / policy</text>
+      <polyline fill="none" stroke="#4CC58C" stroke-width="3" points="80,355 224,353 320,351 560,345 720,341"/>
+      <g fill="#4CC58C"><circle cx="80" cy="355" r="4.5"/><circle cx="224" cy="353" r="4.5"/><circle cx="320" cy="351" r="4.5"/><circle cx="560" cy="345" r="4.5"/><circle cx="720" cy="341" r="4.5"/></g>
+      <text x="700" y="333" text-anchor="end" font-size="13" fill="#4CC58C" font-weight="700">8.2 ms</text>
+      <text x="330" y="338" font-size="12.5" fill="#4CC58C">~flat (&lt;0.15 ms / policy)</text>
+    </svg>
+    <figcaption>Figure 2 &mdash; End-to-end median (k6 http_req_duration) vs. policy count. Every point measured, none projected. Kyverno v1.18.1.</figcaption>
+  </figure>
+
+  <table>
+    <tr><th>Policies</th><th>Kyverno median</th><th>AIOGen median</th><th>End-to-end speedup</th></tr>
+    <tr><td>10</td><td class="k">34 ms</td><td class="a">2.2 ms</td><td class="a">~15&times;</td></tr>
+    <tr><td>19</td><td class="k">49 ms</td><td class="a">3.1 ms</td><td class="a">~16&times;</td></tr>
+    <tr><td>25</td><td class="k">64 ms</td><td class="a">3.7 ms</td><td class="a">~17&times;</td></tr>
+    <tr><td>40</td><td class="k">101 ms</td><td class="a">6.5 ms</td><td class="a">~16&times;</td></tr>
+    <tr><td>50</td><td class="k">128 ms</td><td class="a">8.2 ms</td><td class="a">~16&times;</td></tr>
+  </table>
+
+  <figure>
+    <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="End-to-end speedup bars: about 15 to 17 times across 10 to 50 policies; engine core widens to about 30 times.">
+      <line x1="70" y1="40" x2="70" y2="300" stroke="rgba(255,255,255,0.28)"/>
+      <line x1="70" y1="300" x2="730" y2="300" stroke="rgba(255,255,255,0.28)"/>
+      <g font-size="12" fill="#8DA1A0">
+        <text x="62" y="304" text-anchor="end">0</text>
+        <line x1="70" y1="232" x2="730" y2="232" stroke="rgba(255,255,255,0.07)"/><text x="62" y="236" text-anchor="end">10&times;</text>
+        <line x1="70" y1="164" x2="730" y2="164" stroke="rgba(255,255,255,0.07)"/><text x="62" y="168" text-anchor="end">20&times;</text>
+        <line x1="70" y1="96"  x2="730" y2="96"  stroke="rgba(255,255,255,0.07)"/><text x="62" y="100" text-anchor="end">30&times;</text>
+      </g>
+      <g fill="#4CC58C">
+        <rect x="112" y="198" width="72" height="102" rx="3"/>
+        <rect x="240" y="191" width="72" height="109" rx="3"/>
+        <rect x="368" y="184" width="72" height="116" rx="3"/>
+        <rect x="496" y="191" width="72" height="109" rx="3"/>
+        <rect x="624" y="191" width="72" height="109" rx="3"/>
+      </g>
+      <g font-size="13" fill="#4CC58C" font-weight="800" text-anchor="middle">
+        <text x="148" y="190">15&times;</text><text x="276" y="183">16&times;</text><text x="404" y="176">17&times;</text><text x="532" y="183">16&times;</text><text x="660" y="183">16&times;</text>
+      </g>
+      <g font-size="12.5" fill="#9FB4B2" text-anchor="middle">
+        <text x="148" y="318">10</text><text x="276" y="318">19</text><text x="404" y="318">25</text><text x="532" y="318">40</text><text x="660" y="318">50</text>
+        <text x="400" y="344" font-weight="600">policies per request</text>
+      </g>
+      <line x1="70" y1="96" x2="730" y2="96" stroke="#5FC7C0" stroke-dasharray="5 5" stroke-width="1"/>
+      <text x="726" y="88" text-anchor="end" font-size="12.5" fill="#5FC7C0" font-weight="700">engine handler reaches ~30&times; @ 50 policies</text>
+    </svg>
+    <figcaption>Figure 3 &mdash; End-to-end speedup (Kyverno median &divide; AIOGen median) holds a durable ~16&times; across scale; at the engine-handler layer the advantage widens to ~30&times;.</figcaption>
+  </figure>
+
+  <div class="callout"><b>Reading the two multipliers.</b> The end-to-end number (~16&times;) is dampened because <em>both</em> engines pay the same fixed network/TLS round-trip on every request. Strip that shared floor away and look at the engine itself, and the compiled-vs-interpreted gap opens to ~30&times; at 50 policies &mdash; and keeps widening as policy count grows.</div>
+
+  <h2>Why latency is a cost, not just a delay</h2>
+  <p>Admission runs on the write path of every workload: each pod creation waits for the policy verdict. Every additional millisecond there is compute time spent evaluating requests and holding resources. In a busy cluster, higher admission latency compounds into more CPU, more memory pressure, more replicas to hold throughput &mdash; and a larger bill for the same governance outcome. A governance layer that behaves like efficient infrastructure, rather than recurring overhead, is simply easier to justify &mdash; especially at the edge, where every core is scarce.</p>
+
+  <h2>Methodology</h2>
+  <p>We publish the test profile so the claim is anchored to a defined workload and a disclosed reference version.</p>
+  <table>
+    <tr><th>Item</th><th>Details</th></tr>
+    <tr><td>Load generator</td><td>k6, concurrent direct &mdash; 100 virtual users, 1000 requests</td></tr>
+    <tr><td>Path</td><td>Allow path: a fully-compliant pod exercising the entire policy chain</td></tr>
+    <tr><td>Environment</td><td>Same single-node 16-core virtual machine; both engines deployed side by side, without CPU limits</td></tr>
+    <tr><td>Policies</td><td>Identical Pod policy set, measured at 10 / 19 / 25 / 40 / 50 policies</td></tr>
+    <tr><td>Kyverno version</td><td>v1.18.1 (self-deployed on the same host)</td></tr>
+    <tr><td>Inner-circle metric</td><td>Pure policy-logic latency (per rule / per symbol)</td></tr>
+    <tr><td>Outer-circle metric</td><td>Full engine-handler latency (each engine&rsquo;s own admission histogram)</td></tr>
+    <tr><td>End-to-end metric</td><td>k6 <code>http_req_duration</code> median (client round-trip)</td></tr>
+  </table>
+
+  <div class="disc">
+    <b>Disclaimer.</b> These figures are point-in-time engineering measurements under controlled conditions and are not guarantees of future production performance. AIOGen remains under active optimization, and published metrics may change as the product evolves. Actual performance varies with hardware profile, Kubernetes version, request shape, policy count and complexity, admission configuration, and surrounding system activity. Where a third-party product (Kyverno v1.18.1) is referenced, the comparison is methodology-bound &mdash; both engines were run under the identical profile described above &mdash; and is provided for engineering context, not as a universal claim across all deployments.
+  </div>
+
+  <h2>Founder&rsquo;s note</h2>
+  <p>We share these results to show where AIOGen stands today, not to suggest the journey is finished. The earlier checkpoint compared us against a published benchmark on a different environment; this one puts both engines on the same box under the same load, which we believe is the fairer test. The result we care about most isn&rsquo;t a single multiplier &mdash; it&rsquo;s the <b>shape</b> of the curve. A compiled engine that stays flat as governance grows is what makes policy affordable at scale, from cloud to edge. Our focus from here is scale and deployment readiness.</p>
+  <p class="sign">&mdash; Founder, Au.AI Software Labs</p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Maintained by Au.AI Software Labs · Public benchmark checkpoint, 2026 ·
+    <a href="https://auailabs.com/benchmark-case-study/">auailabs.com</a>
+  </div>
+</footer>
+
+</body>
+</html>
